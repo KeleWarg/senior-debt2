@@ -358,20 +358,13 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
             <Button fullWidth showTrailingIcon onClick={onContinue}>
               See If You Qualify
             </Button>
+            <div className="flex items-center justify-center gap-2 mt-3">
+              <Image src="/icon-shield.png" alt="Shield" width={20} height={20} unoptimized />
+              <span style={{ fontSize: '12px', color: '#999999' }}>
+                Your information is secure and never shared
+              </span>
+            </div>
           </StickyButtonContainer>
-        </div>
-
-        {/* Trust line */}
-        <div
-          className={cn(
-            'w-full flex items-center justify-center gap-2 mt-4 transition-opacity duration-500',
-            stage >= 4 ? 'opacity-100' : 'opacity-0'
-          )}
-        >
-          <Image src="/icon-shield.png" alt="Shield" width={20} height={20} unoptimized />
-          <span style={{ fontSize: '12px', color: '#999999' }}>
-            Your information is secure and never shared
-          </span>
         </div>
       </div>
     </div>
