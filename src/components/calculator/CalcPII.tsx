@@ -103,7 +103,7 @@ export function CalcPII({ debtAmount, potentialSavings, yearsSaved, onSubmit }: 
                 valueColor: GREEN,
               },
               {
-                label: 'Timeline',
+                label: 'Time Saved',
                 value: yearsSaved,
                 badge: 'Eligible',
               },
