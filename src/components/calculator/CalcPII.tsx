@@ -105,7 +105,6 @@ export function CalcPII({ debtAmount, potentialSavings, yearsSaved, onSubmit }: 
               {
                 label: 'Time Saved',
                 value: yearsSaved,
-                badge: 'Eligible',
               },
             ].map((row, i, arr) => (
               <div key={row.label}>
