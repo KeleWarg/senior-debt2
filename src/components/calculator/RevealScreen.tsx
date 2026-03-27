@@ -93,13 +93,16 @@ interface RevealScreenProps {
   currentPath: DebtFreeResult
   reliefPath: ReliefResult
   onContinue: () => void
+  skipIntro?: boolean
 }
 
-export function RevealScreen({ debtAmount, interestRate, monthlyPayment, currentPath, reliefPath, onContinue }: RevealScreenProps) {
+export function RevealScreen({ debtAmount, interestRate, monthlyPayment, currentPath, reliefPath, onContinue, skipIntro }: RevealScreenProps) {
   const clipId = React.useId()
-  const [stage, setStage] = React.useState(0)
+  const [stage, setStage] = React.useState(skipIntro ? 4 : 0)
 
   React.useEffect(() => {
+    if (skipIntro) return
+
     const t1 = setTimeout(() => setStage(1), 300)
     const t2 = setTimeout(() => setStage(2), 1200)
     const t3 = setTimeout(() => setStage(3), 2000)
@@ -131,7 +134,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
     }, 400)
 
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(tConfetti) }
-  }, [])
+  }, [skipIntro])
 
   const cappedCurrentMonths = currentPath.reachable ? currentPath.months : 420
   const reliefIsFaster = reliefPath.months < cappedCurrentMonths

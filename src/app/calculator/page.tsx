@@ -40,6 +40,7 @@ export default function CalculatorPage() {
   })
   const [currentResult, setCurrentResult] = React.useState<DebtFreeResult | null>(null)
   const [reliefResult, setReliefResult] = React.useState<ReliefResult | null>(null)
+  const hasSeenReveal = React.useRef(false)
 
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
@@ -116,7 +117,8 @@ export default function CalculatorPage() {
             monthlyPayment={data.monthlyPayment}
             currentPath={currentResult}
             reliefPath={reliefResult}
-            onContinue={() => goTo('pii')}
+            onContinue={() => { hasSeenReveal.current = true; goTo('pii') }}
+            skipIntro={hasSeenReveal.current}
           />
         )
       case 'pii':
