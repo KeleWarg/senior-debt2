@@ -1,11 +1,8 @@
 'use client'
 
 import * as React from 'react'
-import { AlertTriangle } from 'lucide-react'
-import { Button } from '@/components/ui'
-import { StickyButtonContainer } from '@/components/ui/StickyButtonContainer'
-import { AnimatedCounter } from '@/components/ui/AnimatedCounter'
-import { formatCurrency } from '@/lib/utils'
+import Image from 'next/image'
+import { RadioGroup, RadioCard } from '@/components/ui'
 
 interface PaymentSliderProps {
   initialValue?: number
@@ -14,35 +11,26 @@ interface PaymentSliderProps {
   onSubmit: (value: number) => void
 }
 
-const MIN = 100
-const MAX = 2000
-const STEP = 25
-const DEFAULT = 350
+const PAYMENT_RANGES = [
+  { id: '100-300', label: '$100 – $300/mo', mid: 200, min: 100, max: 300 },
+  { id: '300-500', label: '$300 – $500/mo', mid: 400, min: 300, max: 500 },
+  { id: '500-800', label: '$500 – $800/mo', mid: 650, min: 500, max: 800 },
+  { id: '800-1200', label: '$800 – $1,200/mo', mid: 1000, min: 800, max: 1200 },
+  { id: '1200-1600', label: '$1,200 – $1,600/mo', mid: 1400, min: 1200, max: 1600 },
+  { id: '1600-2000', label: '$1,600 – $2,000/mo', mid: 1800, min: 1600, max: 2000 },
+]
 
 export function PaymentSlider({
-  initialValue = DEFAULT,
-  debtAmount,
-  interestRate,
   onSubmit,
 }: PaymentSliderProps) {
-  const [value, setValue] = React.useState(initialValue)
-  const sliderRef = React.useRef<HTMLInputElement>(null)
-
-  React.useEffect(() => {
-    if (sliderRef.current) {
-      const pct = ((value - MIN) / (MAX - MIN)) * 100
-      sliderRef.current.style.setProperty('--progress', `${pct}%`)
-    }
-  }, [value])
-
-  const monthlyInterest = debtAmount * (interestRate / 100 / 12)
-  const principalPortion = Math.max(0, value - monthlyInterest)
-  const isMinPaymentTrap = value <= monthlyInterest
+  const handleSelect = (id: string) => {
+    const range = PAYMENT_RANGES.find((r) => r.id === id)!
+    setTimeout(() => onSubmit(range.mid), 300)
+  }
 
   return (
     <div className="w-full max-w-[555px] mx-auto px-4 sm:px-6 pt-2 sm:pt-4 pb-4 sm:pb-8">
-      <div className="flex flex-col items-start w-full has-sticky-button">
-        {/* Step label */}
+      <div className="flex flex-col items-start w-full">
         <p
           className="animate-fade-in-up text-xs font-medium uppercase tracking-wider text-neutral-400 mb-3"
           style={{ animationDelay: '400ms' }}
@@ -50,87 +38,67 @@ export function PaymentSlider({
           Step 2 of 2
         </p>
 
-        {/* Headline */}
         <h1
-          className="animate-fade-in-up font-display text-headline-lg sm:text-display lg:text-display-md mb-2"
+          className="animate-fade-in-up font-display text-headline-lg sm:text-display lg:text-display-md mb-3"
           style={{ animationDelay: '400ms', color: '#1B2A4A' }}
         >
-          How much are you paying per month?
+          How much are you{' '}
+          <span style={{ color: '#007AC8' }}>paying per month?</span>
         </h1>
 
-        {/* Sub-copy */}
         <p
-          className="animate-fade-in-up leading-relaxed mb-8"
+          className="animate-fade-in-up leading-relaxed mb-6"
           style={{ animationDelay: '500ms', fontSize: '15px', color: '#666666' }}
         >
-          Your total monthly payment across all debts.
+          Credit cards, loans, medical bills — it all counts.
+          Most people who check save up to 25% on what they owe.
         </p>
 
-        {/* Large number display */}
-        <div className="animate-fade-in-up w-full text-center py-4 mb-6" style={{ animationDelay: '500ms' }}>
-          <span style={{ color: '#1B2A4A' }}>
-            <AnimatedCounter
-              value={value}
-              prefix="$"
-              suffix="/mo"
-              className="font-display text-5xl md:text-6xl font-bold tracking-tight"
-              duration={200}
-            />
-          </span>
-        </div>
-
-        {/* Slider */}
-        <div className="animate-fade-in-up w-full px-1 mb-2" style={{ animationDelay: '600ms' }}>
-          <input
-            ref={sliderRef}
-            type="range"
-            min={MIN}
-            max={MAX}
-            step={STEP}
-            value={value}
-            onChange={(e) => setValue(Number(e.target.value))}
-            className="debt-slider w-full"
-            aria-label="Monthly payment"
-          />
-        </div>
-        <div className="w-full flex justify-between mb-6" style={{ fontSize: '12px', color: '#999999' }}>
-          <span>$100/mo</span>
-          <span>$2,000/mo</span>
-        </div>
-
-        {/* Warning / info box */}
         <div
-          className="animate-fade-in-up w-full mb-8"
+          className="animate-fade-in-up w-full h-px mb-6"
+          style={{ animationDelay: '550ms', backgroundColor: 'rgba(26, 26, 46, 0.08)' }}
+        />
+
+        <div className="animate-fade-in-up w-full mb-6" style={{ animationDelay: '600ms' }}>
+          <RadioGroup
+            onValueChange={handleSelect}
+            className="grid grid-cols-2 gap-3"
+          >
+            {PAYMENT_RANGES.map((range) => (
+              <RadioCard key={range.id} value={range.id}>
+                {range.label}
+              </RadioCard>
+            ))}
+          </RadioGroup>
+        </div>
+
+        <div
+          className="animate-fade-in-up w-full text-left"
           style={{
             animationDelay: '700ms',
-            backgroundColor: '#FFFBEB',
+            backgroundColor: '#EEF2F7',
             borderRadius: '12px',
-            padding: '16px',
+            padding: '20px',
           }}
         >
-          {isMinPaymentTrap ? (
-            <div className="flex gap-2">
-              <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#92400E' }} />
-              <p style={{ fontSize: '14px', color: '#92400E' }}>
-                Your payment may not even cover monthly interest. This is the minimum payment trap.
-              </p>
-            </div>
-          ) : (
-            <p style={{ fontSize: '14px', color: '#92400E' }}>
-              At {formatCurrency(value)}/mo, roughly{' '}
-              <span className="font-semibold">{formatCurrency(Math.round(monthlyInterest))}</span>{' '}
-              goes to interest each month. Only{' '}
-              <span className="font-semibold">{formatCurrency(Math.round(principalPortion))}</span>{' '}
-              reduces your balance.
+          <div className="flex items-start gap-3">
+            <Image
+              src="/icon-shield.png"
+              alt="Secure"
+              width={64}
+              height={64}
+              unoptimized
+              className="flex-shrink-0 animate-float"
+            />
+            <p style={{ fontSize: '14px', color: '#1B2A4A', lineHeight: '1.6' }}>
+              Secure & private — no credit impact. The average person paying minimums
+              stays in debt for{' '}
+              <span className="font-bold" style={{ color: '#EB4015' }}>21+ years</span>.
+              A relief program can cut that to{' '}
+              <span className="font-bold" style={{ color: '#0C7663' }}>under 4</span>.
             </p>
-          )}
+          </div>
         </div>
-
-        <StickyButtonContainer>
-          <Button fullWidth showTrailingIcon onClick={() => onSubmit(value)}>
-            Show My Debt-Free Date
-          </Button>
-        </StickyButtonContainer>
       </div>
     </div>
   )

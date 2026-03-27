@@ -6,11 +6,11 @@ import type { CalcStep } from '@/types/calculator'
 
 const STEP_PROGRESS: Partial<Record<CalcStep, number>> = {
   intro: 0,
-  debtAmount: 20,
-  monthlyPayment: 45,
-  loader: 60,
-  reveal: 75,
-  pii: 95,
+  debtAmount: 60,
+  monthlyPayment: 90,
+  loader: 93,
+  reveal: 95,
+  pii: 98,
 }
 
 interface CalcProgressBarProps {
@@ -20,7 +20,15 @@ interface CalcProgressBarProps {
 }
 
 export function CalcProgressBar({ step, onBack, dark }: CalcProgressBarProps) {
-  const progress = STEP_PROGRESS[step] ?? 0
+  const target = STEP_PROGRESS[step] ?? 0
+  const [progress, setProgress] = React.useState(0)
+
+  React.useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      setProgress(target)
+    })
+    return () => cancelAnimationFrame(raf)
+  }, [target])
 
   return (
     <div className="w-full py-3">

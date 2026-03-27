@@ -2,15 +2,16 @@
 
 import * as React from 'react'
 import Image from 'next/image'
+import confetti from 'canvas-confetti'
 import { Button } from '@/components/ui'
 import { StickyButtonContainer } from '@/components/ui/StickyButtonContainer'
 import { formatCurrency } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 import type { DebtFreeResult, ReliefResult } from '@/lib/calculator'
 
-const BLUE = '#0066CC'
 const NAVY = '#1B2A4A'
 const GREEN = '#0C7663'
+const RED = '#EB4015'
 const GREY = '#B0B0B0'
 
 const VB_W = 480
@@ -103,7 +104,33 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
     const t2 = setTimeout(() => setStage(2), 1200)
     const t3 = setTimeout(() => setStage(3), 2000)
     const t4 = setTimeout(() => setStage(4), 2600)
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4) }
+
+    const tConfetti = setTimeout(() => {
+      const duration = 800
+      const end = Date.now() + duration
+      const frame = () => {
+        confetti({
+          particleCount: 2,
+          angle: 60,
+          spread: 70,
+          origin: { x: 0, y: 0.6 },
+          colors: ['#007AC8', '#0C7663', '#FFB934'],
+          gravity: 1.2,
+        })
+        confetti({
+          particleCount: 2,
+          angle: 120,
+          spread: 70,
+          origin: { x: 1, y: 0.6 },
+          colors: ['#007AC8', '#0C7663', '#FFB934'],
+          gravity: 1.2,
+        })
+        if (Date.now() < end) requestAnimationFrame(frame)
+      }
+      frame()
+    }, 400)
+
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(tConfetti) }
   }, [])
 
   const cappedCurrentMonths = currentPath.reachable ? currentPath.months : 420
@@ -149,11 +176,33 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
   return (
     <div className="w-full max-w-[555px] mx-auto px-4 sm:px-6 pt-2 sm:pt-4 pb-4 sm:pb-8">
       <div className="flex flex-col items-start w-full has-sticky-button">
+        {/* Years saved callout */}
+        {(reliefIsFaster || !currentPath.reachable) && (
+          <div
+            className="animate-fade-in-up inline-flex items-center gap-2 rounded-full px-4 py-2 mb-4"
+            style={{ backgroundColor: '#EEF2F7' }}
+          >
+            <div
+              className="flex items-center justify-center rounded-full flex-shrink-0"
+              style={{ width: '20px', height: '20px', backgroundColor: '#007AC8' }}
+            >
+              <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
+                <path d="M4 8.5L6.5 11L12 5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <span style={{ fontSize: '14px', fontWeight: 700, color: '#1B2A4A' }}>
+              {!currentPath.reachable
+                ? 'You could save 30+ years with a relief program'
+                : `You could save ${timeSavedLabel} and ${formatCurrency(Math.max(0, totalSavings))}`}
+            </span>
+          </div>
+        )}
+
         <h1
           className="animate-fade-in-up font-display text-headline-lg sm:text-display lg:text-display-md mb-2"
           style={{ color: NAVY }}
         >
-          Here&apos;s your <span style={{ color: BLUE }}>debt-free timeline.</span>
+          Here&apos;s your <span style={{ color: '#007AC8' }}>debt-free timeline.</span>
         </h1>
         <p
           className="animate-fade-in-up leading-relaxed mb-6"
@@ -181,13 +230,13 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
                     style={{ transition: 'width 900ms ease-out' }}
                   />
                 </clipPath>
-                <linearGradient id={`${clipId}-blue`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={BLUE} stopOpacity="0.15" />
-                  <stop offset="100%" stopColor={BLUE} stopOpacity="0.02" />
-                </linearGradient>
-                <linearGradient id={`${clipId}-green`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={GREEN} stopOpacity="0.10" />
+                <linearGradient id={`${clipId}-relief`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={GREEN} stopOpacity="0.15" />
                   <stop offset="100%" stopColor={GREEN} stopOpacity="0.02" />
+                </linearGradient>
+                <linearGradient id={`${clipId}-current`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={RED} stopOpacity="0.10" />
+                  <stop offset="100%" stopColor={RED} stopOpacity="0.02" />
                 </linearGradient>
               </defs>
 
@@ -207,21 +256,21 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
               {/* Area fills */}
               <path
                 d={generateAreaPath(currentD)}
-                fill={`url(#${clipId}-green)`}
+                fill={`url(#${clipId}-current)`}
                 className="transition-opacity duration-300"
                 style={{ opacity: stage >= 2 ? 1 : 0 }}
               />
               <path
                 d={generateAreaPath(reliefD)}
-                fill={`url(#${clipId}-blue)`}
+                fill={`url(#${clipId}-relief)`}
                 className="transition-opacity duration-300"
                 style={{ opacity: stage >= 2 ? 1 : 0 }}
               />
 
               {/* Lines revealed left-to-right */}
               <g clipPath={`url(#${clipId})`}>
-                <path d={currentD} fill="none" stroke={GREEN} strokeWidth="3" />
-                <path d={reliefD} fill="none" stroke={BLUE} strokeWidth="3" />
+                <path d={currentD} fill="none" stroke={RED} strokeWidth="3" />
+                <path d={reliefD} fill="none" stroke={GREEN} strokeWidth="3" />
 
                 {/* Start dot */}
                 <circle cx={PAD.left} cy={PAD.top} r="4" fill={NAVY} />
@@ -231,7 +280,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
                   cx={reliefEndX}
                   cy={bottomY}
                   r="5"
-                  fill={BLUE}
+                  fill={GREEN}
                   className="transition-opacity duration-500"
                   style={{ opacity: stage >= 2 ? 1 : 0 }}
                 />
@@ -241,7 +290,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
                   cx={currentEndX}
                   cy={bottomY}
                   r="4"
-                  fill={GREEN}
+                  fill={RED}
                   className="transition-opacity duration-500"
                   style={{ opacity: stage >= 2 ? 1 : 0 }}
                 />
@@ -286,7 +335,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
                 textAnchor="middle"
                 fontSize="11"
                 fontWeight="700"
-                fill={BLUE}
+                fill={GREEN}
                 className="transition-opacity duration-500"
                 style={{ opacity: stage >= 2 ? 1 : 0 }}
               >
@@ -301,7 +350,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
                   textAnchor="middle"
                   fontSize="11"
                   fontWeight="700"
-                  fill={GREEN}
+                  fill={RED}
                   className="transition-opacity duration-500"
                   style={{ opacity: stage >= 2 ? 1 : 0 }}
                 >
@@ -310,11 +359,11 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
               )}
 
               {/* Legend */}
-              <line x1={PAD.left} y1={PAD.top - 16} x2={PAD.left + 18} y2={PAD.top - 16} stroke={BLUE} strokeWidth="3" />
+              <line x1={PAD.left} y1={PAD.top - 16} x2={PAD.left + 18} y2={PAD.top - 16} stroke={GREEN} strokeWidth="3" />
               <text x={PAD.left + 22} y={PAD.top - 13} fontSize="9" fill={NAVY} fontWeight="500">
                 With relief program
               </text>
-              <line x1={PAD.left + 150} y1={PAD.top - 16} x2={PAD.left + 168} y2={PAD.top - 16} stroke={GREEN} strokeWidth="3" />
+              <line x1={PAD.left + 150} y1={PAD.top - 16} x2={PAD.left + 168} y2={PAD.top - 16} stroke={RED} strokeWidth="3" />
               <text x={PAD.left + 172} y={PAD.top - 13} fontSize="9" fill={GREY}>
                 Minimum payments
               </text>
@@ -330,11 +379,11 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
           )}
         >
           <div className="border border-neutral-200 rounded-xl p-4 text-center">
-            <p style={{ fontSize: '22px', fontWeight: 700, color: BLUE }}>{formatCurrency(Math.max(0, totalSavings))}</p>
+            <p style={{ fontSize: '22px', fontWeight: 700, color: GREEN }}>{formatCurrency(Math.max(0, totalSavings))}</p>
             <p style={{ fontSize: '11px', color: '#999999', marginTop: '2px' }}>Could save</p>
           </div>
           <div className="border border-neutral-200 rounded-xl p-4 text-center">
-            <p style={{ fontSize: '22px', fontWeight: 700, color: BLUE }}>
+            <p style={{ fontSize: '22px', fontWeight: 700, color: GREEN }}>
               {!currentPath.reachable ? '30+ yrs' : reliefIsFaster ? timeSavedLabel : `${reliefPath.months} mo`}
             </p>
             <p style={{ fontSize: '11px', color: '#999999', marginTop: '2px' }}>
@@ -342,8 +391,69 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
             </p>
           </div>
           <div className="border border-neutral-200 rounded-xl p-4 text-center">
-            <p style={{ fontSize: '22px', fontWeight: 700, color: BLUE }}>{reliefPath.year}</p>
+            <p style={{ fontSize: '22px', fontWeight: 700, color: GREEN }}>{reliefPath.year}</p>
             <p style={{ fontSize: '11px', color: '#999999', marginTop: '2px' }}>Debt-free by</p>
+          </div>
+        </div>
+
+        {/* Comparison table */}
+        <div
+          className={cn(
+            'w-full grid grid-cols-2 gap-3 mb-6 transition-all duration-700',
+            stage >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+          )}
+        >
+          <div className="border border-neutral-200 rounded-xl p-4" style={{ borderTopColor: RED, borderTopWidth: '3px' }}>
+            <p style={{ fontSize: '13px', fontWeight: 700, color: RED, marginBottom: '12px' }}>Minimum Payments</p>
+            <div className="space-y-3">
+              <div>
+                <p style={{ fontSize: '11px', color: '#999999' }}>Total you&apos;ll pay</p>
+                <p style={{ fontSize: '18px', fontWeight: 700, color: NAVY }}>
+                  {currentPath.reachable ? formatCurrency(currentPath.totalPaid) : 'Never paid off'}
+                </p>
+              </div>
+              <div>
+                <p style={{ fontSize: '11px', color: '#999999' }}>Time to payoff</p>
+                <p style={{ fontSize: '18px', fontWeight: 700, color: NAVY }}>
+                  {!currentPath.reachable
+                    ? '30+ years'
+                    : currentPath.months >= 12
+                      ? `${Math.floor(currentPath.months / 12)} yr ${currentPath.months % 12} mo`
+                      : `${currentPath.months} mo`}
+                </p>
+              </div>
+              <div>
+                <p style={{ fontSize: '11px', color: '#999999' }}>Debt-free by</p>
+                <p style={{ fontSize: '18px', fontWeight: 700, color: RED }}>
+                  {currentPath.reachable ? currentPath.year : '2055+'}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="border border-neutral-200 rounded-xl p-4" style={{ borderTopColor: GREEN, borderTopWidth: '3px' }}>
+            <p style={{ fontSize: '13px', fontWeight: 700, color: GREEN, marginBottom: '12px' }}>With Relief Program</p>
+            <div className="space-y-3">
+              <div>
+                <p style={{ fontSize: '11px', color: '#999999' }}>Total cost</p>
+                <p style={{ fontSize: '18px', fontWeight: 700, color: GREEN }}>
+                  {formatCurrency(reliefPath.totalCost)}
+                </p>
+              </div>
+              <div>
+                <p style={{ fontSize: '11px', color: '#999999' }}>Program length</p>
+                <p style={{ fontSize: '18px', fontWeight: 700, color: GREEN }}>
+                  {reliefPath.months >= 12
+                    ? `${Math.floor(reliefPath.months / 12)} yr ${reliefPath.months % 12} mo`
+                    : `${reliefPath.months} mo`}
+                </p>
+              </div>
+              <div>
+                <p style={{ fontSize: '11px', color: '#999999' }}>Debt-free by</p>
+                <p style={{ fontSize: '18px', fontWeight: 700, color: GREEN }}>
+                  {reliefPath.year}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -356,7 +466,9 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
         >
           <StickyButtonContainer>
             <Button fullWidth showTrailingIcon onClick={onContinue}>
-              See If You Qualify
+              {reliefIsFaster || !currentPath.reachable
+                ? `See If You Qualify — Save ${timeSavedLabel}`
+                : 'See If You Qualify'}
             </Button>
             <div className="flex items-center justify-center gap-2 mt-3">
               <Image src="/icon-shield.png" alt="Shield" width={20} height={20} unoptimized />

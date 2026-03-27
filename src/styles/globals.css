@@ -679,6 +679,20 @@
   }
 }
 
+/* Savings card icon glow pulse */
+@keyframes savings-glow {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(0, 122, 200, 0.2);
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba(0, 122, 200, 0.35);
+  }
+}
+
+.animate-savings-glow {
+  animation: savings-glow 2.5s ease-in-out infinite;
+}
+
 /* ============================================
    TYPEFORM SCREEN TRANSITIONS
    Opacity-based crossfade between screens.
