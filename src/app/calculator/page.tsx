@@ -95,16 +95,12 @@ export default function CalculatorPage() {
       case 'debtAmount':
         return (
           <DebtSlider
-            initialValue={data.debtAmount}
             onSubmit={(v) => { update({ debtAmount: v }); goTo('monthlyPayment') }}
           />
         )
       case 'monthlyPayment':
         return (
           <PaymentSlider
-            initialValue={data.monthlyPayment}
-            debtAmount={data.debtAmount}
-            interestRate={DEFAULT_APR}
             onSubmit={(v) => { update({ monthlyPayment: v }); goTo('loader') }}
           />
         )

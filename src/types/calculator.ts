@@ -7,20 +7,15 @@
 export type CalcStep =
   | 'intro'
   | 'debtAmount'
-  | 'interestRate'
   | 'monthlyPayment'
   | 'loader'
   | 'reveal'
-  | 'debtType'
-  | 'hardship'
   | 'pii'
 
 export interface CalcFunnelData {
   debtAmount: number
   interestRate: number
   monthlyPayment: number
-  debtType?: string
-  hardshipStatus?: string
   firstName?: string
   lastName?: string
   email?: string

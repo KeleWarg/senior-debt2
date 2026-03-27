@@ -43,16 +43,19 @@ export function CalcIntro({ onStart }: CalcIntroProps) {
   const [displayYear, setDisplayYear] = React.useState(START_YEAR)
 
   React.useEffect(() => {
+    let intervalId: ReturnType<typeof setInterval> | undefined
     const timeout = setTimeout(() => {
       let year = START_YEAR
-      const interval = setInterval(() => {
+      intervalId = setInterval(() => {
         year -= 1
         setDisplayYear(year)
-        if (year <= END_YEAR) clearInterval(interval)
+        if (year <= END_YEAR) clearInterval(intervalId)
       }, TICK_MS)
-      return () => clearInterval(interval)
     }, START_DELAY_MS)
-    return () => clearTimeout(timeout)
+    return () => {
+      clearTimeout(timeout)
+      if (intervalId) clearInterval(intervalId)
+    }
   }, [])
 
   return (

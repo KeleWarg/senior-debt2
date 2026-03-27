@@ -5,7 +5,6 @@ import Image from 'next/image'
 import { RadioGroup, RadioCard } from '@/components/ui'
 
 interface DebtSliderProps {
-  initialValue?: number
   onSubmit: (value: number) => void
 }
 
@@ -20,7 +19,8 @@ const DEBT_RANGES = [
 
 export function DebtSlider({ onSubmit }: DebtSliderProps) {
   const handleSelect = (id: string) => {
-    const range = DEBT_RANGES.find((r) => r.id === id)!
+    const range = DEBT_RANGES.find((r) => r.id === id)
+    if (!range) return
     setTimeout(() => onSubmit(range.mid), 300)
   }
 

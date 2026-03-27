@@ -5,9 +5,6 @@ import Image from 'next/image'
 import { RadioGroup, RadioCard } from '@/components/ui'
 
 interface PaymentSliderProps {
-  initialValue?: number
-  debtAmount: number
-  interestRate: number
   onSubmit: (value: number) => void
 }
 
@@ -24,7 +21,8 @@ export function PaymentSlider({
   onSubmit,
 }: PaymentSliderProps) {
   const handleSelect = (id: string) => {
-    const range = PAYMENT_RANGES.find((r) => r.id === id)!
+    const range = PAYMENT_RANGES.find((r) => r.id === id)
+    if (!range) return
     setTimeout(() => onSubmit(range.mid), 300)
   }
 
@@ -50,8 +48,8 @@ export function PaymentSlider({
           className="animate-fade-in-up leading-relaxed mb-6"
           style={{ animationDelay: '500ms', fontSize: '15px', color: '#666666' }}
         >
-          Credit cards, loans, medical bills — it all counts.
-          Most people who check save up to 25% on what they owe.
+          Include all monthly minimums — credit cards, loans, medical bills.
+          Even small changes can shift your payoff date by years.
         </p>
 
         <div

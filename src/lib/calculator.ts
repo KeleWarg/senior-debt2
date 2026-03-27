@@ -5,7 +5,7 @@
  * Relief estimate uses industry-average assumptions:
  *   - 50% balance reduction through settlement
  *   - 22% fee on settled amount
- *   - 24-36 month program duration (scales with debt)
+ *   - 24-48 month program duration (scales with debt)
  */
 
 export interface DebtFreeResult {
@@ -53,9 +53,10 @@ export function calculateDebtFreeDate(
   while (balance > 0.01 && months < MAX_MONTHS) {
     const interest = balance * monthlyRate
     const principalPaid = Math.min(monthlyPayment - interest, balance)
+    const payment = Math.min(monthlyPayment, balance + interest)
     balance -= principalPaid
     totalInterest += interest
-    totalPaid += monthlyPayment
+    totalPaid += payment
     months++
   }
 
