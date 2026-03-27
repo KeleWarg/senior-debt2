@@ -59,16 +59,16 @@ export function CalcIntro({ onStart }: CalcIntroProps) {
   }, [])
 
   return (
-    <div className="w-full max-w-[555px] mx-auto px-4 sm:px-6 pt-6 sm:pt-10 pb-4 sm:pb-8">
+    <div className="w-full max-w-[555px] mx-auto px-4 sm:px-6 pt-6 sm:pt-10 lg:pt-6 pb-4 sm:pb-8 lg:pb-4">
       <div className="flex flex-col items-center w-full text-center">
         {/* Lottie animation */}
-        <div className="animate-fade-in-up mb-4" style={{ width: '160px', height: '160px', animationDelay: '200ms' }}>
+        <div className="animate-fade-in-up mb-4 lg:mb-2" style={{ width: '160px', height: '160px', animationDelay: '200ms' }}>
           <LottieIcon animationData={relaxAnimation} className="w-full h-full" />
         </div>
 
         {/* Headline */}
         <h1
-          className="animate-fade-in-up font-display text-display sm:text-display-md lg:text-display-lg mb-3"
+          className="animate-fade-in-up font-display text-display sm:text-display-md lg:text-display-lg mb-3 lg:mb-2"
           style={{ animationDelay: '300ms', color: '#1B2A4A' }}
         >
           You could be debt-free
@@ -80,7 +80,7 @@ export function CalcIntro({ onStart }: CalcIntroProps) {
 
         {/* Subtext */}
         <p
-          className="animate-fade-in-up leading-relaxed mb-6"
+          className="animate-fade-in-up leading-relaxed mb-6 lg:mb-4"
           style={{ animationDelay: '400ms', fontSize: '15px', color: '#666666' }}
         >
           Most people have never calculated it. Get your personalized savings timeline in seconds.
@@ -88,7 +88,7 @@ export function CalcIntro({ onStart }: CalcIntroProps) {
 
         {/* Example box */}
         <div
-          className="animate-fade-in-up w-full text-left mb-8"
+          className="animate-fade-in-up w-full text-left mb-8 lg:mb-5"
           style={{
             animationDelay: '500ms',
             backgroundColor: '#F5F5F7',
@@ -124,7 +124,7 @@ export function CalcIntro({ onStart }: CalcIntroProps) {
 
         {/* Trust badges */}
         <div
-          className="animate-fade-in-up w-full px-5 py-4 mt-6"
+          className="animate-fade-in-up w-full px-5 py-4 mt-6 lg:mt-4 lg:py-3"
           style={{ animationDelay: '700ms' }}
         >
           <p style={{ fontSize: '13px', color: '#666666', marginBottom: '10px' }}>
