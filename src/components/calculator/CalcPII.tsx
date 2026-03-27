@@ -115,28 +115,12 @@ export function CalcPII({ debtAmount, potentialSavings, yearsSaved, onSubmit }: 
                   <span style={{ fontSize: '15px', color: '#6B7280' }}>
                     {row.label}
                   </span>
-                  <div className="flex items-center gap-2.5">
-                    <span
-                      className="font-semibold"
-                      style={{ fontSize: '15px', color: row.valueColor || '#1B2A4A' }}
-                    >
-                      {row.value}
-                    </span>
-                    {row.badge && (
-                      <span
-                        className="font-medium"
-                        style={{
-                          fontSize: '12px',
-                          color: GREEN,
-                          backgroundColor: 'rgba(12, 118, 99, 0.1)',
-                          borderRadius: '6px',
-                          padding: '2px 10px',
-                        }}
-                      >
-                        {row.badge}
-                      </span>
-                    )}
-                  </div>
+                  <span
+                    className="font-semibold"
+                    style={{ fontSize: '15px', color: row.valueColor || '#1B2A4A' }}
+                  >
+                    {row.value}
+                  </span>
                 </div>
                 {i < arr.length - 1 && (
                   <div style={{ height: '1px', backgroundColor: '#DEE4ED', margin: '0 20px' }} />
