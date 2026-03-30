@@ -373,90 +373,56 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
           </div>
         </div>
 
-        {/* Stat cards row */}
+        {/* Stat cards 2×2 grid */}
         <div
           className={cn(
-            'w-full grid grid-cols-3 gap-3 mb-6 transition-all duration-700',
+            'w-full rounded-xl border border-neutral-200 bg-white overflow-hidden mb-8 transition-all duration-700',
             stage >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
           )}
         >
-          <div className="border border-neutral-200 rounded-xl p-4 text-center">
-            <p style={{ fontSize: '22px', fontWeight: 700, color: GREEN }}>{formatCurrency(Math.max(0, totalSavings))}</p>
-            <p style={{ fontSize: '11px', color: '#999999', marginTop: '2px' }}>Could save</p>
-          </div>
-          <div className="border border-neutral-200 rounded-xl p-4 text-center">
-            <p style={{ fontSize: '22px', fontWeight: 700, color: GREEN }}>
-              {!currentPath.reachable ? '30+ yrs' : reliefIsFaster ? timeSavedLabel : `${reliefPath.months} mo`}
-            </p>
-            <p style={{ fontSize: '11px', color: '#999999', marginTop: '2px' }}>
-              {reliefIsFaster || !currentPath.reachable ? 'Faster payoff' : 'Program length'}
-            </p>
-          </div>
-          <div className="border border-neutral-200 rounded-xl p-4 text-center">
-            <p style={{ fontSize: '22px', fontWeight: 700, color: GREEN }}>{reliefPath.year}</p>
-            <p style={{ fontSize: '11px', color: '#999999', marginTop: '2px' }}>Debt-free by</p>
+          <div className="grid grid-cols-1">
+            <StatCard
+              label="Total estimated debt reduction"
+              value={formatCurrency(Math.max(0, totalSavings))}
+              description="This is a ballpark estimate of how much your total debt could be reduced through a relief program. Actual results may vary based on your financial situation."
+            />
+            <StatCard
+              label="Estimated monthly payment reduction"
+              value={`${monthlyPayment > 0 ? Math.round(((monthlyPayment - reliefPath.monthlyPayment) / monthlyPayment) * 100) : 0}%`}
+              description="You could potentially reduce your monthly payments, making them more manageable compared to your current obligations."
+              borderTop
+            />
+            <StatCard
+              label="Estimated amount you could settle"
+              value={formatCurrency(Math.round(debtAmount * 0.5))}
+              description="This is the estimated amount you may repay after settlement negotiations, depending on your enrolled program and creditors."
+              borderTop
+            />
+            <StatCard
+              label="Estimated fees & program costs"
+              value={formatCurrency(reliefPath.totalCost - Math.round(debtAmount * 0.5))}
+              description="These are typical fees associated with debt relief programs. Fees vary by provider and are often performance-based."
+              borderTop
+            />
           </div>
         </div>
 
-        {/* Comparison table */}
+        {/* Disclaimer */}
         <div
           className={cn(
-            'w-full grid grid-cols-2 gap-3 mb-6 transition-all duration-700',
+            'w-full rounded-xl px-5 py-4 mb-6 flex items-start gap-3 transition-all duration-700',
             stage >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
           )}
+          style={{ backgroundColor: '#F0F5FA' }}
         >
-          <div className="border border-neutral-200 rounded-xl p-4" style={{ borderTopColor: RED, borderTopWidth: '3px' }}>
-            <p style={{ fontSize: '13px', fontWeight: 700, color: RED, marginBottom: '12px' }}>Minimum Payments</p>
-            <div className="space-y-3">
-              <div>
-                <p style={{ fontSize: '11px', color: '#999999' }}>Total you&apos;ll pay</p>
-                <p style={{ fontSize: '18px', fontWeight: 700, color: NAVY }}>
-                  {currentPath.reachable ? formatCurrency(currentPath.totalPaid) : 'Never paid off'}
-                </p>
-              </div>
-              <div>
-                <p style={{ fontSize: '11px', color: '#999999' }}>Time to payoff</p>
-                <p style={{ fontSize: '18px', fontWeight: 700, color: NAVY }}>
-                  {!currentPath.reachable
-                    ? '30+ years'
-                    : currentPath.months >= 12
-                      ? `${Math.floor(currentPath.months / 12)} yr ${currentPath.months % 12} mo`
-                      : `${currentPath.months} mo`}
-                </p>
-              </div>
-              <div>
-                <p style={{ fontSize: '11px', color: '#999999' }}>Debt-free by</p>
-                <p style={{ fontSize: '18px', fontWeight: 700, color: RED }}>
-                  {currentPath.reachable ? currentPath.year : '2055+'}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="border border-neutral-200 rounded-xl p-4" style={{ borderTopColor: GREEN, borderTopWidth: '3px' }}>
-            <p style={{ fontSize: '13px', fontWeight: 700, color: GREEN, marginBottom: '12px' }}>With Relief Program</p>
-            <div className="space-y-3">
-              <div>
-                <p style={{ fontSize: '11px', color: '#999999' }}>Total cost</p>
-                <p style={{ fontSize: '18px', fontWeight: 700, color: GREEN }}>
-                  {formatCurrency(reliefPath.totalCost)}
-                </p>
-              </div>
-              <div>
-                <p style={{ fontSize: '11px', color: '#999999' }}>Program length</p>
-                <p style={{ fontSize: '18px', fontWeight: 700, color: GREEN }}>
-                  {reliefPath.months >= 12
-                    ? `${Math.floor(reliefPath.months / 12)} yr ${reliefPath.months % 12} mo`
-                    : `${reliefPath.months} mo`}
-                </p>
-              </div>
-              <div>
-                <p style={{ fontSize: '11px', color: '#999999' }}>Debt-free by</p>
-                <p style={{ fontSize: '18px', fontWeight: 700, color: GREEN }}>
-                  {reliefPath.year}
-                </p>
-              </div>
-            </div>
-          </div>
+          <svg className="w-5 h-5 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="none" aria-hidden>
+            <circle cx="10" cy="10" r="9" stroke="#6A6A6A" strokeWidth="1.5" />
+            <path d="M10 9v4M10 6.5v.01" stroke="#6A6A6A" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+          <p style={{ fontSize: '13px', color: '#555555', lineHeight: '1.6' }}>
+            <strong>These estimates are based on common debt relief outcomes.</strong>
+            {' '}Your actual savings, timeline, and payments may differ depending on your debt profile and program terms.
+          </p>
         </div>
 
         {/* CTA */}
@@ -468,9 +434,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
         >
           <StickyButtonContainer>
             <Button fullWidth showTrailingIcon onClick={onContinue}>
-              {reliefIsFaster || !currentPath.reachable
-                ? `See If You Qualify — Save ${timeSavedLabel}`
-                : 'See If You Qualify'}
+              See if you Qualify
             </Button>
             <div className="flex items-center justify-center gap-2 mt-3">
               <Image src="/icon-shield.png" alt="Shield" width={20} height={20} unoptimized />
@@ -481,6 +445,32 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
           </StickyButtonContainer>
         </div>
       </div>
+    </div>
+  )
+}
+
+function StatCard({ label, value, description, borderTop }: {
+  label: string
+  value: string
+  description: string
+  borderTop?: boolean
+}) {
+  return (
+    <div
+      className={cn(
+        'px-5 py-5',
+        borderTop && 'border-t border-neutral-200',
+      )}
+    >
+      <p className="font-bold mb-2" style={{ fontSize: '14px', color: NAVY }}>
+        {label}
+      </p>
+      <p className="font-display leading-none mb-2" style={{ fontSize: 'clamp(28px, 5vw, 36px)', color: '#007AC8' }}>
+        {value}
+      </p>
+      <p style={{ fontSize: '13px', color: '#666666', lineHeight: '1.55' }}>
+        {description}
+      </p>
     </div>
   )
 }

@@ -95,7 +95,7 @@ export function CalculatorLanding({
           </div>
 
           {/* Right column — headline + options + trust */}
-          <div className="w-full lg:flex-1 lg:min-w-0 flex flex-col items-center text-center lg:items-start lg:text-left lg:pl-8 overflow-hidden">
+          <div className="w-full max-w-[520px] mx-auto lg:max-w-none lg:mx-0 lg:flex-1 lg:min-w-0 flex flex-col items-center text-center lg:items-start lg:text-left lg:pl-8 overflow-hidden">
             <h1
               className="animate-fade-in-up font-display text-display sm:text-display-md lg:text-display-lg mb-2 lg:w-[130%] lg:max-w-none"
               style={{ animationDelay: '200ms', color: '#1B2A4A' }}

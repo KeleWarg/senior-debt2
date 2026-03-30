@@ -20,7 +20,7 @@ export function DebtReliefExplainer({ onCta }: DebtReliefExplainerProps) {
         <div className="flex flex-col lg:flex-row lg:items-start lg:gap-12">
 
           {/* ── Left column: copy ── */}
-          <ScrollReveal className="lg:w-[48%] mb-12 lg:mb-0">
+          <ScrollReveal className="w-full max-w-[520px] mx-auto lg:max-w-none lg:mx-0 lg:w-[48%] mb-12 lg:mb-0">
             {/* Pill badge — filled green, like CK "Spending" */}
             <span
               className="inline-block text-[11px] font-bold uppercase tracking-[0.08em] text-white rounded px-2.5 py-1 mb-5"
@@ -71,7 +71,7 @@ export function DebtReliefExplainer({ onCta }: DebtReliefExplainerProps) {
           </ScrollReveal>
 
           {/* ── Right column: decorative circle + floating card ── */}
-          <ScrollReveal delay={150} className="lg:w-[52%] flex items-center justify-center relative min-h-[420px]">
+          <ScrollReveal delay={150} className="w-full max-w-[400px] mx-auto lg:max-w-none lg:mx-0 lg:w-[52%] flex items-center justify-center relative min-h-[340px] lg:min-h-[420px]">
             {/* Large decorative circle */}
             <div
               className="absolute rounded-full"

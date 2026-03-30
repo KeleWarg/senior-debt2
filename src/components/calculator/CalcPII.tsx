@@ -189,15 +189,9 @@ export function CalcPII({ debtAmount, potentialSavings, yearsSaved, onSubmit }: 
             Get My Free Report
           </Button>
 
-          <div className="flex items-center justify-center gap-1.5 mt-2">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <rect x="3" y="6" width="8" height="6" rx="1" stroke="#999999" strokeWidth="1.2" />
-              <path d="M5 6V4a2 2 0 1 1 4 0v2" stroke="#999999" strokeWidth="1.2" strokeLinecap="round" />
-            </svg>
-            <span style={{ fontSize: '12px', color: '#999999' }}>
-              256-Bit Encrypted &nbsp;&bull;&nbsp; Never Sold or Shared
-            </span>
-          </div>
+          <p className="text-center mt-2" style={{ fontSize: '12px', color: '#999999' }}>
+            Typically costs $50-$100.
+          </p>
         </div>
       </div>
     </>
