@@ -169,26 +169,24 @@ export function CalculatorLanding({
       </div>
 
       {/* ── Below-fold: headline + stats + comparison table ── */}
-      <ScrollReveal>
-        <DebtRealityAnchor>
-          <ComparisonTable
-            withoutRelief={{
-              totalPaid: COMPARISON_STATIC.withoutRelief.totalPaid,
-              debtFreeYear: COMPARISON_STATIC.withoutRelief.debtFreeYear,
-              monthlyPayment: COMPARISON_STATIC.withoutRelief.monthlyPayment,
-              paymentYears: COMPARISON_STATIC.withoutRelief.paymentYears,
-            }}
-            withRelief={{
-              totalCost: COMPARISON_STATIC.withRelief.totalPaid,
-              debtFreeYear: COMPARISON_STATIC.withRelief.debtFreeYear,
-              monthlyPayment: COMPARISON_STATIC.withRelief.monthlyPayment,
-              programYears: COMPARISON_STATIC.withRelief.programYears,
-            }}
-            totalSaved={COMPARISON_STATIC.withRelief.totalSaved}
-            disclaimer={`Based on $${COMPARISON_STATIC.debtAmount.toLocaleString()} in credit card debt at ${COMPARISON_STATIC.aprPercent}% APR, starting ${COMPARISON_STATIC.startYear}. Relief estimate assumes industry-average program terms.`}
-          />
-        </DebtRealityAnchor>
-      </ScrollReveal>
+      <DebtRealityAnchor>
+        <ComparisonTable
+          withoutRelief={{
+            totalPaid: COMPARISON_STATIC.withoutRelief.totalPaid,
+            debtFreeYear: COMPARISON_STATIC.withoutRelief.debtFreeYear,
+            monthlyPayment: COMPARISON_STATIC.withoutRelief.monthlyPayment,
+            paymentYears: COMPARISON_STATIC.withoutRelief.paymentYears,
+          }}
+          withRelief={{
+            totalCost: COMPARISON_STATIC.withRelief.totalPaid,
+            debtFreeYear: COMPARISON_STATIC.withRelief.debtFreeYear,
+            monthlyPayment: COMPARISON_STATIC.withRelief.monthlyPayment,
+            programYears: COMPARISON_STATIC.withRelief.programYears,
+          }}
+          totalSaved={COMPARISON_STATIC.withRelief.totalSaved}
+          disclaimer={`Based on $${COMPARISON_STATIC.debtAmount.toLocaleString()} in credit card debt at ${COMPARISON_STATIC.aprPercent}% APR, starting ${COMPARISON_STATIC.startYear}. Relief estimate assumes industry-average program terms.`}
+        />
+      </DebtRealityAnchor>
 
       <ScrollReveal>
         <DebtReliefExplainer onCta={onCta} />
