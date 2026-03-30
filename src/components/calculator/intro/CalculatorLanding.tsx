@@ -6,6 +6,7 @@ import { ComparisonTable } from '@/components/calculator/intro/ComparisonTable'
 import { ConfidentialityBlock } from '@/components/calculator/intro/ConfidentialityBlock'
 import { DebtRealityAnchor } from '@/components/calculator/intro/DebtRealityAnchor'
 import { DebtReliefExplainer } from '@/components/calculator/intro/DebtReliefExplainer'
+import { FAQ } from '@/components/calculator/intro/FAQ'
 import { IndustryProof } from '@/components/calculator/intro/IndustryProof'
 import { SuccessRate } from '@/components/calculator/intro/SuccessRate'
 import { TrustBar } from '@/components/calculator/intro/TrustBar'
@@ -207,6 +208,10 @@ export function CalculatorLanding({
 
       <ScrollReveal>
         <SuccessRate />
+      </ScrollReveal>
+
+      <ScrollReveal>
+        <FAQ />
       </ScrollReveal>
 
     </div>
