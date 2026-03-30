@@ -33,3 +33,5 @@ export { StickyButtonContainer } from './StickyButtonContainer'
 export { DatePicker } from './DatePicker'
 
 export { OTPVerificationModal } from './OTPVerificationModal'
+
+export { ScrollReveal } from './ScrollReveal'

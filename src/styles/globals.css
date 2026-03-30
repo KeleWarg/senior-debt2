@@ -262,6 +262,35 @@
   }
 }
 
+/* Staggered hero image floats */
+.animate-float-a {
+  animation: float-hero-a 4s ease-in-out infinite;
+}
+.animate-float-b {
+  animation: float-hero-b 4s ease-in-out infinite;
+}
+
+@keyframes float-hero-a {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes float-hero-b {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(10px); }
+}
+
+/* Trust logo marquee */
+.trust-marquee {
+  animation: marquee-scroll 20s linear infinite;
+}
+.trust-marquee:hover {
+  animation-play-state: paused;
+}
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 /* Map Pin Floating Animation */
 @keyframes float {
   0%, 100% {
@@ -591,6 +620,11 @@
 .stagger-3 { animation-delay: 220ms; }
 .stagger-4 { animation-delay: 300ms; }
 .stagger-5 { animation-delay: 380ms; }
+
+.scroll-reveal-hidden {
+  opacity: 0;
+  transform: translateY(24px);
+}
 
 /* ============================================
    PARTNER LOGO CAROUSEL

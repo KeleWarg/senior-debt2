@@ -21,6 +21,30 @@ export function formatCurrency(value: number): string {
   }).format(value)
 }
 
+/** e.g. "15 years" or "2 years 3 months" */
+export function formatMonthsAsYears(months: number): string {
+  if (!Number.isFinite(months) || months <= 0) return '—'
+  const y = Math.floor(months / 12)
+  const m = months % 12
+  if (y === 0) return `${m} ${m === 1 ? 'month' : 'months'}`
+  if (m === 0) return `${y} ${y === 1 ? 'year' : 'years'}`
+  return `${y} yr ${m} mo`
+}
+
+/** "$350/mo for 15 years" */
+export function formatMonthlyForDuration(monthly: number, months: number): string {
+  if (!Number.isFinite(months) || months <= 0) return `${formatCurrency(monthly)}/mo`
+  const y = Math.floor(months / 12)
+  const m = months % 12
+  const dur =
+    y > 0 && m === 0
+      ? `${y} ${y === 1 ? 'year' : 'years'}`
+      : y > 0
+        ? `${y} years${m > 0 ? ` ${m} mo` : ''}`
+        : `${m} months`
+  return `${formatCurrency(monthly)}/mo for ${dur}`
+}
+
 /**
  * Format phone number as (###) ###-####
  */

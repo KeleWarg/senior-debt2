@@ -12,10 +12,19 @@ export type CalcStep =
   | 'reveal'
   | 'pii'
 
+/** v3 landing motivation — maps to calculator defaults */
+export type MotivationDriver =
+  | 'debt_free_fast'
+  | 'pay_less_interest'
+  | 'lower_monthly_payments'
+  | 'debt_free_date'
+  | 'all_of_the_above'
+
 export interface CalcFunnelData {
   debtAmount: number
   interestRate: number
   monthlyPayment: number
+  motivationDriver?: MotivationDriver | null
   firstName?: string
   lastName?: string
   email?: string

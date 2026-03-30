@@ -2,23 +2,22 @@
 
 import * as React from 'react'
 import {
-  CalcIntro,
+  CalcLoader,
   DebtSlider,
   PaymentSlider,
-  CalcLoader,
   RevealScreen,
   CalcPII,
 } from '@/components/calculator'
+import { CalculatorLanding } from '@/components/calculator/intro/CalculatorLanding'
 import { CalcProgressBar } from '@/components/calculator/CalcProgressBar'
 import { Header } from '@/components/layout/Header'
+import { DEFAULT_APR, MOTIVATION_DEFAULTS } from '@/components/calculator/shared/constants'
 import {
   calculateDebtFreeDate,
   calculateReliefTimeline,
 } from '@/lib/calculator'
 import type { DebtFreeResult, ReliefResult } from '@/lib/calculator'
-import type { CalcStep, CalcFunnelData } from '@/types/calculator'
-
-const DEFAULT_APR = 24.37
+import type { CalcStep, CalcFunnelData, MotivationDriver } from '@/types/calculator'
 
 const STEP_ORDER: CalcStep[] = [
   'intro',
@@ -37,6 +36,7 @@ export default function CalculatorPage() {
     debtAmount: 15000,
     interestRate: DEFAULT_APR,
     monthlyPayment: 350,
+    motivationDriver: null,
   })
   const [currentResult, setCurrentResult] = React.useState<DebtFreeResult | null>(null)
   const [reliefResult, setReliefResult] = React.useState<ReliefResult | null>(null)
@@ -73,13 +73,26 @@ export default function CalculatorPage() {
   const showProgress = !isFullScreen
   const showBack = step !== 'intro' && step !== 'loader'
 
-  // Full-screen steps (intro hero, loader)
   if (step === 'intro') {
     return (
       <div className="min-h-screen flex flex-col bg-white">
         <Header />
         <div className="flex-1">
-          <CalcIntro onStart={() => goTo('debtAmount')} />
+          <CalculatorLanding
+            motivation={data.motivationDriver ?? null}
+            onMotivationSelect={(id: MotivationDriver) => {
+              const d = MOTIVATION_DEFAULTS[id]
+              update({
+                motivationDriver: id,
+                debtAmount: d.debtAmount,
+                monthlyPayment: d.monthlyPayment,
+              })
+            }}
+            onCta={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+              goTo('debtAmount')
+            }}
+          />
         </div>
       </div>
     )
@@ -89,19 +102,24 @@ export default function CalculatorPage() {
     return <CalcLoader onComplete={handleLoaderComplete} />
   }
 
-  // Standard layout for all other steps
   const renderStep = () => {
     switch (step) {
       case 'debtAmount':
         return (
           <DebtSlider
-            onSubmit={(v) => { update({ debtAmount: v }); goTo('monthlyPayment') }}
+            onSubmit={(v) => {
+              update({ debtAmount: v })
+              goTo('monthlyPayment')
+            }}
           />
         )
       case 'monthlyPayment':
         return (
           <PaymentSlider
-            onSubmit={(v) => { update({ monthlyPayment: v }); goTo('loader') }}
+            onSubmit={(v) => {
+              update({ monthlyPayment: v })
+              goTo('loader')
+            }}
           />
         )
       case 'reveal':
@@ -113,30 +131,36 @@ export default function CalculatorPage() {
             monthlyPayment={data.monthlyPayment}
             currentPath={currentResult}
             reliefPath={reliefResult}
-            onContinue={() => { hasSeenReveal.current = true; goTo('pii') }}
+            onContinue={() => {
+              hasSeenReveal.current = true
+              goTo('pii')
+            }}
             skipIntro={hasSeenReveal.current}
           />
         )
-      case 'pii':
-        {
-          const cappedMonths = currentResult?.reachable ? currentResult.months : 420
-          const mSaved = Math.max(0, cappedMonths - (reliefResult?.months ?? 0))
-          return (
-            <CalcPII
-              debtAmount={data.debtAmount}
-              potentialSavings={
-                currentResult?.reachable
-                  ? (currentResult.totalPaid - (reliefResult?.totalCost ?? 0))
-                  : (data.debtAmount - (reliefResult?.totalCost ?? 0))
-              }
-              yearsSaved={mSaved >= 12 ? `${Math.floor(mSaved / 12)} years` : `${mSaved} months`}
-              onSubmit={(pii) => {
-                update(pii)
-                alert('Lead submitted! (API integration pending)')
-              }}
-            />
-          )
-        }
+      case 'pii': {
+        const cappedMonths = currentResult?.reachable ? currentResult.months : 420
+        const mSaved = Math.max(0, cappedMonths - (reliefResult?.months ?? 0))
+        return (
+          <CalcPII
+            debtAmount={data.debtAmount}
+            potentialSavings={
+              currentResult?.reachable
+                ? currentResult.totalPaid - (reliefResult?.totalCost ?? 0)
+                : data.debtAmount - (reliefResult?.totalCost ?? 0)
+            }
+            yearsSaved={
+              mSaved >= 12
+                ? `${Math.floor(mSaved / 12)} years`
+                : `${mSaved} months`
+            }
+            onSubmit={(pii) => {
+              update(pii)
+              alert('Lead submitted! (API integration pending)')
+            }}
+          />
+        )
+      }
       default:
         return null
     }
@@ -150,10 +174,7 @@ export default function CalculatorPage() {
       {showProgress && (
         <div className="sticky top-[56px] z-40 bg-white">
           <div className="max-w-[555px] mx-auto px-4 sm:px-6">
-            <CalcProgressBar
-              step={step}
-              onBack={showBack ? goBack : undefined}
-            />
+            <CalcProgressBar step={step} onBack={showBack ? goBack : undefined} />
           </div>
         </div>
       )}

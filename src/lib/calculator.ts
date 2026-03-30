@@ -5,7 +5,7 @@
  * Relief estimate uses industry-average assumptions:
  *   - 50% balance reduction through settlement
  *   - 22% fee on settled amount
- *   - 24-48 month program duration (scales with debt)
+ *   - 36-month program duration (v3 spec — confirm with partner)
  */
 
 export interface DebtFreeResult {
@@ -20,6 +20,7 @@ export interface DebtFreeResult {
 export interface ReliefResult {
   months: number
   totalCost: number
+  monthlyPayment: number
   year: number
   monthName: string
   saved: number
@@ -73,11 +74,16 @@ export function calculateDebtFreeDate(
   }
 }
 
+const SETTLEMENT_RATE = 0.5
+const PROGRAM_FEE_RATE = 0.22
+const PROGRAM_MONTHS = 36
+
 export function calculateReliefTimeline(principal: number): ReliefResult {
-  const settledAmount = Math.round(principal * 0.50)
-  const fee = Math.round(settledAmount * 0.22)
-  const totalCost = settledAmount + fee
-  const months = Math.min(Math.round(24 + (principal / 10000) * 8), 48)
+  const settledAmount = principal * SETTLEMENT_RATE
+  const programFee = settledAmount * PROGRAM_FEE_RATE
+  const totalCost = Math.round(settledAmount + programFee)
+  const monthlyPayment = totalCost / PROGRAM_MONTHS
+  const months = PROGRAM_MONTHS
 
   const now = new Date()
   const freeDate = new Date(now.getFullYear(), now.getMonth() + months)
@@ -85,15 +91,13 @@ export function calculateReliefTimeline(principal: number): ReliefResult {
   return {
     months,
     totalCost,
+    monthlyPayment: Math.round(monthlyPayment),
     year: freeDate.getFullYear(),
     monthName: freeDate.toLocaleString('default', { month: 'long' }),
-    saved: principal - totalCost,
+    saved: Math.round(principal - totalCost),
   }
 }
 
-/**
- * Estimate savings range for advertorial funnel (range-based debt input)
- */
 export function estimateSavingsRange(debtRangeId: string): string {
   const ranges: Record<string, string> = {
     '7500-10000': '$2,500 – $5,000',
