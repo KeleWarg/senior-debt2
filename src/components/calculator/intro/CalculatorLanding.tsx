@@ -101,16 +101,8 @@ export function CalculatorLanding({
               className="animate-fade-in-up font-display text-display sm:text-display-md lg:text-display-lg mb-2 lg:w-[130%] lg:max-w-none"
               style={{ animationDelay: '200ms', color: '#1B2A4A' }}
             >
-              Resolve your debt for up to{' '}
+              Resolve your debt for{' '}
               <br className="hidden sm:block" />
-              <span className="relative inline-block" style={{ color: '#EB4015', fontSize: '0.75em' }}>
-                90%
-                <span
-                  className="absolute left-0 right-0 top-1/2 h-[2px] bg-[#EB4015]"
-                  style={{ transform: 'rotate(-12deg)' }}
-                  aria-hidden
-                />
-              </span>{' '}
               <span className="whitespace-nowrap" style={{ color: '#0C7663' }}>half what you owe.</span>
             </h1>
 
