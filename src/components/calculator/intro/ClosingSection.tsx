@@ -16,7 +16,7 @@ export function ClosingSection({ onCta }: ClosingSectionProps) {
   }
 
   return (
-    <section className="w-full px-4 sm:px-6 pb-16">
+    <section className="w-full px-4 sm:px-6 pt-16 pb-16">
       <div className="max-w-[680px] mx-auto">
         <div className="border border-neutral-200 rounded-2xl overflow-hidden bg-white">
           {/* Row 1: Proof */}

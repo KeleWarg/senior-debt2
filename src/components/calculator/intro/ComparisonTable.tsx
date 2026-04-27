@@ -38,7 +38,7 @@ export function ComparisonTable({
         <div className="px-6 sm:px-8 pt-6 pb-0">
           {/* Legend */}
           <ScrollReveal>
-            <div className="flex items-center gap-6 mb-6">
+            <div className="flex items-center justify-center gap-6 mb-6">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-feedback-error" />
                 <span className="text-[11px] font-medium text-neutral-500">Minimum payments</span>
@@ -80,7 +80,7 @@ export function ComparisonTable({
           {/* ── Row 3: Monthly payment ── */}
           <ScrollReveal delay={240}>
             <div className="py-6">
-              <p className="text-[12px] text-neutral-500 mb-3">Monthly payment</p>
+              <p className="text-[12px] text-neutral-500 mb-3 text-center">Monthly payment</p>
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-lg border border-feedback-error/20 bg-feedback-error/[0.04] px-4 py-3">
                   <p className="text-[22px] sm:text-[24px] font-semibold text-feedback-error leading-tight">
@@ -102,7 +102,7 @@ export function ComparisonTable({
         </div>
 
         {/* Savings row */}
-        <div className="border-t border-feedback-success/15 bg-feedback-success/[0.04] px-6 sm:px-8 py-4 flex items-center justify-between">
+        <div className="border-t border-feedback-success/15 bg-feedback-success/[0.04] px-6 sm:px-8 py-4 flex flex-col items-center justify-center text-center gap-1">
           <span className="text-[13px] text-feedback-success font-medium">Estimated savings</span>
           <span className="text-[22px] font-semibold text-feedback-success">
             {formatCurrency(totalSaved)}
@@ -138,7 +138,7 @@ function ComparisonRow({
 }) {
   return (
     <div className="py-6">
-      <p className="text-[12px] text-neutral-500 mb-2">{label}</p>
+      <p className="text-[12px] text-neutral-500 mb-2 text-center">{label}</p>
       <div className="flex items-center justify-between">
         <div>
           <span

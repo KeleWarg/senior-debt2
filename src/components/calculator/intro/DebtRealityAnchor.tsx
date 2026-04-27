@@ -1,9 +1,10 @@
 'use client'
 
 import * as React from 'react'
+import { Button } from '@/components/ui'
 import { trackEvent } from '@/components/calculator/shared/tracking'
 
-export function DebtRealityAnchor({ children }: { children?: React.ReactNode }) {
+export function DebtRealityAnchor({ children, onCta }: { children?: React.ReactNode; onCta?: () => void }) {
   const sectionRef = React.useRef<HTMLDivElement>(null)
   const viewed = React.useRef(false)
 
@@ -30,7 +31,7 @@ export function DebtRealityAnchor({ children }: { children?: React.ReactNode }) 
         <p className="text-[13px] font-medium text-neutral-500 text-center mb-3 tracking-wide uppercase">
           Compare your options
         </p>
-        <h2 className="font-display text-center mb-4 max-w-[500px] mx-auto text-[32px] sm:text-[38px] text-neutral-800 leading-[1.15] font-semibold">
+        <h2 className="font-sans text-center mb-4 max-w-[500px] mx-auto text-[32px] sm:text-[38px] text-neutral-800 leading-[1.15] font-semibold">
           See the difference debt relief could make
         </h2>
         <p className="text-center max-w-[520px] mx-auto mb-10 text-[15px] text-neutral-500 leading-relaxed">
@@ -40,6 +41,14 @@ export function DebtRealityAnchor({ children }: { children?: React.ReactNode }) 
         </p>
 
         {children}
+
+        {onCta && (
+          <div className="w-full max-w-md mx-auto mt-10">
+            <Button fullWidth showTrailingIcon onClick={onCta}>
+              Calculate your debt-free date
+            </Button>
+          </div>
+        )}
       </section>
     </div>
   )

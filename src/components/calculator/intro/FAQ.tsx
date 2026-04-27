@@ -18,9 +18,9 @@ export function FAQ() {
 
   return (
     <section className="w-full px-4 sm:px-6 lg:px-10 py-12 sm:py-16">
-      <div className="max-w-[1120px] mx-auto">
+      <div className="max-w-[680px] mx-auto">
         <h2
-          className="font-display text-center mb-8 text-[32px] sm:text-[38px] leading-[1.15] font-semibold"
+          className="font-sans text-center mb-8 text-[32px] sm:text-[38px] leading-[1.15] font-semibold"
           style={{ color: '#1B2A4A' }}
         >
           Common questions
