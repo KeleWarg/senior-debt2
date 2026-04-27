@@ -5,6 +5,7 @@ import { ClosingSection } from '@/components/calculator/intro/ClosingSection'
 import { ComparisonTable } from '@/components/calculator/intro/ComparisonTable'
 import { DebtRealityAnchor } from '@/components/calculator/intro/DebtRealityAnchor'
 import { FAQ } from '@/components/calculator/intro/FAQ'
+import { PressMentions } from '@/components/calculator/intro/PressMentions'
 import { SuccessRate } from '@/components/calculator/intro/SuccessRate'
 import { Testimonials } from '@/components/calculator/intro/Testimonials'
 import { TrustBar } from '@/components/calculator/intro/TrustBar'
@@ -34,7 +35,7 @@ export function CalculatorLanding({
 
   return (
     <div className="w-full flex flex-col">
-      <ValueBanner onContinue={onCta} />
+      <ValueBanner />
 
       {/* ── Hero fold — two-column on lg ── */}
       <div className="w-full max-w-[1120px] mx-auto px-4 sm:px-6 lg:px-10 pt-8 sm:pt-12 lg:pt-16 pb-8 sm:pb-12 lg:pb-16">
@@ -118,6 +119,10 @@ export function CalculatorLanding({
           disclaimer={`Based on $${COMPARISON_STATIC.debtAmount.toLocaleString()} in credit card debt at ${COMPARISON_STATIC.aprPercent}% APR, starting ${COMPARISON_STATIC.startYear}. Relief estimate assumes industry-average program terms.`}
         />
       </DebtRealityAnchor>
+
+      <ScrollReveal>
+        <PressMentions />
+      </ScrollReveal>
 
       <ScrollReveal>
         <Testimonials />
