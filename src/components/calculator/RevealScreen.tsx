@@ -398,12 +398,6 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
               description="This is the estimated amount you may repay after settlement negotiations, depending on your enrolled program and creditors."
               borderTop
             />
-            <StatCard
-              label="Estimated fees & program costs"
-              value={formatCurrency(reliefPath.totalCost - Math.round(debtAmount * 0.5))}
-              description="These are typical fees associated with debt relief programs. Fees vary by provider and are often performance-based."
-              borderTop
-            />
           </div>
         </div>
 

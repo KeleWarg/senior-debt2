@@ -26,11 +26,11 @@ export const COMPARISON_STATIC = {
   },
   withRelief: {
     debtFreeYear: 2029,
-    totalPaid: 17500,
-    monthlyPayment: 486,
+    totalPaid: 12500,
+    monthlyPayment: 347,
     programYears: 3,
     interestSaved: 23700,
-    totalSaved: 31200,
+    totalSaved: 36200,
   },
 } as const
 
@@ -55,29 +55,33 @@ export const MOTIVATION_DEFAULTS: Record<
 
 export const FAQ_ITEMS = [
   {
+    id: 'monthly_payment',
+    question: 'How much will I have to pay each month?',
+    answer: 'Debt relief companies typically lower your total amount owed by 40-60%. They do this by negotiating lower rates with creditors who prefer a smaller payment instead of nothing. While everyone\u2019s situation is different and results vary, all your debt is consolidated into 1 manageable payment each month:',
+    bullets: [
+      'Clients with $10,000 to $20,000 in debt save an average of $317 per month (that\u2019s around $3,800 a year!)',
+      'Clients with $20,000 to $40,000 in debt save an average of $585 per month (that\u2019s around $7,000 a year!)',
+    ],
+  },
+  {
     id: 'credit_score',
-    question: 'Will this hurt my credit score?',
-    answer: 'Debt relief may temporarily affect your credit score while accounts are being negotiated. However, most participants see their credit improve within 12–24 months of completing the program — and the alternative of minimum payments for 15+ years keeps your utilization high the entire time.',
+    question: 'Will this destroy my credit score?',
+    answer: 'Checking eligibility has zero impact. Enrolling in debt settlement does affect your credit score, this is worth being honest about. Accounts become delinquent during the process, which impacts your score. However, most people enrolling already have damaged credit from late payments, and most find their score begins recovering within 12\u201318 months of completing the program. The question to weigh: does a temporary credit impact matter more than eliminating five or six figures of compounding debt?',
   },
   {
-    id: 'cost',
-    question: 'How much does debt relief cost?',
-    answer: 'This calculator is 100% free. If you choose to enroll in a relief program, fees are typically 15–25% of the enrolled debt — but you only pay on debt that gets successfully settled. There are no upfront costs.',
+    id: 'fee',
+    question: 'Is there a fee to check?',
+    answer: 'No upfront fees, ever. Programs only charge a fee after a settlement has been reached. This is standard industry practice, required by FTC rules.',
   },
   {
-    id: 'safety',
-    question: 'Is my information safe?',
-    answer: "Your data is encrypted and never shared without your explicit permission. This tool is powered by Forbes Advisor's vetted partner network, and all data handling follows industry-standard security protocols.",
+    id: 'qualify',
+    question: 'What\u2019s the minimum debt to qualify?',
+    answer: 'Most programs require at least $10,000 in unsecured debt. Credit cards, medical bills, and personal loans typically qualify; mortgages, auto loans and public student loans generally do not.',
   },
   {
     id: 'bankruptcy',
     question: 'How is this different from bankruptcy?',
-    answer: 'Debt relief is a private negotiation — no court filings, no public record, no asset liquidation. A specialist negotiates directly with your creditors to reduce what you owe. Bankruptcy stays on your credit report for 7–10 years; debt relief programs typically complete in 2–4.',
-  },
-  {
-    id: 'qualify',
-    question: 'Do I qualify?',
-    answer: 'Most people with $7,500 or more in unsecured debt — credit cards, medical bills, personal loans — qualify. The free calculator will show you your estimated savings and timeline — no commitment required.',
+    answer: 'Debt settlement is a private negotiation\u2014 no court, no public record. Most people complete the process in 24\u201348 months. Bankruptcy (Chapter 7 or 13) is a legal proceeding that appears on your public record for 7\u201310 years and affects significantly more aspects of your financial life. Many people who qualify for settlement use it precisely to avoid bankruptcy.',
   },
 ] as const
 
@@ -95,7 +99,7 @@ export const CLOSING_TRUST = {
 /** Landing radio labels (same order as MotivationDriver keys above) */
 export const MOTIVATION_OPTIONS: { id: MotivationDriver; label: string }[] = [
   { id: 'debt_free_fast', label: 'Getting out of debt faster' },
-  { id: 'pay_less_interest', label: 'Reducing what I pay overall' },
-  { id: 'lower_monthly_payments', label: 'Lowering my monthly burden' },
+  { id: 'pay_less_interest', label: 'Reduce my total debt amount' },
+  { id: 'lower_monthly_payments', label: 'Lowering my monthly payments' },
   { id: 'all_of_the_above', label: "I'm not sure yet" },
 ]

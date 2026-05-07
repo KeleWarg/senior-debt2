@@ -1,7 +1,6 @@
 'use client'
 
 import * as React from 'react'
-import Image from 'next/image'
 import { RadioGroup, RadioCard } from '@/components/ui'
 
 interface PaymentSliderProps {
@@ -40,16 +39,16 @@ export function PaymentSlider({
           className="animate-fade-in-up font-display text-headline-lg sm:text-display lg:text-display-md mb-3"
           style={{ animationDelay: '400ms', color: '#1B2A4A' }}
         >
-          How much are you{' '}
-          <span style={{ color: '#007AC8' }}>paying per month?</span>
+          How much are you paying each month in{' '}
+          <span style={{ color: '#007AC8' }}>minimum payments?</span>
         </h1>
 
         <p
           className="animate-fade-in-up leading-relaxed mb-6"
           style={{ animationDelay: '500ms', fontSize: '15px', color: '#666666' }}
         >
-          Include all monthly minimums — credit cards, loans, medical bills.
-          Even small changes can shift your payoff date by years.
+          The average person paying minimums stays in debt for 21+ years.
+          A relief program can cut that to 12–48 months.
         </p>
 
         <div
@@ -79,23 +78,9 @@ export function PaymentSlider({
             padding: '20px',
           }}
         >
-          <div className="flex items-start gap-3">
-            <Image
-              src="/icon-shield.png"
-              alt="Secure"
-              width={64}
-              height={64}
-              unoptimized
-              className="flex-shrink-0 animate-float"
-            />
-            <p style={{ fontSize: '14px', color: '#1B2A4A', lineHeight: '1.6' }}>
-              Secure & private — no credit impact. The average person paying minimums
-              stays in debt for{' '}
-              <span className="font-bold" style={{ color: '#EB4015' }}>21+ years</span>.
-              A relief program can cut that to{' '}
-              <span className="font-bold" style={{ color: '#0C7663' }}>under 4</span>.
-            </p>
-          </div>
+          <p style={{ fontSize: '14px', color: '#1B2A4A', lineHeight: '1.6' }}>
+            Your information is secure and private. It will never be shared without your permission.
+          </p>
         </div>
       </div>
     </div>

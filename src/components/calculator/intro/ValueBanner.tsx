@@ -20,7 +20,7 @@ export function ValueBanner() {
       </span>
 
       <p className="relative z-10 text-sm sm:text-base font-medium leading-snug text-white text-left">
-        Get a free personalized debt-free program: Typically costs $50–$100.
+        Get a free personalized debt relief plan: $100 value
       </p>
     </div>
   )

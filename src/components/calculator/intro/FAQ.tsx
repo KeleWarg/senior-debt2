@@ -59,15 +59,24 @@ export function FAQ() {
 
                 <div
                   style={{
-                    maxHeight: isOpen ? '300px' : '0',
+                    maxHeight: isOpen ? '500px' : '0',
                     opacity: isOpen ? 1 : 0,
                     overflow: 'hidden',
                     transition: 'max-height 200ms ease, opacity 200ms ease',
                   }}
                 >
-                  <p style={{ fontSize: '14px', color: '#4B5563', lineHeight: '1.6', paddingBottom: '20px' }}>
-                    {item.answer}
-                  </p>
+                  <div style={{ fontSize: '14px', color: '#4B5563', lineHeight: '1.6', paddingBottom: '20px' }}>
+                    <p>{item.answer}</p>
+                    {'bullets' in item && (item as { bullets: string[] }).bullets && (
+                      <ul style={{ marginTop: '12px', paddingLeft: '20px', listStyleType: 'disc' }}>
+                        {(item as { bullets: string[] }).bullets.map((bullet, j) => (
+                          <li key={j} style={{ marginBottom: j === 0 ? '8px' : 0 }}>
+                            {bullet}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
               </div>
             )

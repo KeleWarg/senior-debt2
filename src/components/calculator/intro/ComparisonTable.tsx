@@ -55,7 +55,9 @@ export function ComparisonTable({
             <ComparisonRow
               label="Total you'll pay"
               leftValue={formatCurrency(withoutRelief.totalPaid)}
+              leftSub={`pay ${Math.round((withoutRelief.totalPaid / 25000) * 100)}%`}
               rightValue={formatCurrency(withRelief.totalCost)}
+              rightSub={`pay ${Math.round((withRelief.totalCost / 25000) * 100)}%`}
               badge={`${percentLess}% less`}
               strikeLeft
             />
@@ -71,7 +73,7 @@ export function ComparisonTable({
               leftSub={`${withoutRelief.paymentYears} years from now`}
               rightValue={String(withRelief.debtFreeYear)}
               rightSub={`${withRelief.programYears} years from now`}
-              badge={yearsSooner > 0 ? `${yearsSooner} yr sooner` : undefined}
+              badge={yearsSooner > 0 ? `${yearsSooner} years saved` : undefined}
             />
           </ScrollReveal>
 

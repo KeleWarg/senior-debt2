@@ -9,12 +9,12 @@ interface DebtSliderProps {
 }
 
 const DEBT_RANGES = [
-  { id: '5k-10k', label: '$5k – $10k', mid: 7500, min: 5000, max: 10000 },
-  { id: '10k-20k', label: '$10k – $20k', mid: 15000, min: 10000, max: 20000 },
+  { id: '15k-20k', label: '$15k – $20k', mid: 17500, min: 15000, max: 20000 },
   { id: '20k-30k', label: '$20k – $30k', mid: 25000, min: 20000, max: 30000 },
-  { id: '30k-50k', label: '$30k – $50k', mid: 40000, min: 30000, max: 50000 },
+  { id: '30k-40k', label: '$30k – $40k', mid: 35000, min: 30000, max: 40000 },
+  { id: '40k-50k', label: '$40k – $50k', mid: 45000, min: 40000, max: 50000 },
   { id: '50k-75k', label: '$50k – $75k', mid: 62500, min: 50000, max: 75000 },
-  { id: '75k-100k', label: '$75k – $100k', mid: 87500, min: 75000, max: 100000 },
+  { id: '75k+', label: '$75k+', mid: 87500, min: 75000, max: 150000 },
 ]
 
 export function DebtSlider({ onSubmit }: DebtSliderProps) {
@@ -38,16 +38,16 @@ export function DebtSlider({ onSubmit }: DebtSliderProps) {
           className="animate-fade-in-up font-display text-headline-lg sm:text-display lg:text-display-md mb-3"
           style={{ animationDelay: '400ms', color: '#1B2A4A' }}
         >
-          How much is your{' '}
-          <span style={{ color: '#007AC8' }}>estimated debt?</span>
+          How much debt do{' '}
+          <span style={{ color: '#007AC8' }}>you owe?</span>
         </h1>
 
         <p
           className="animate-fade-in-up leading-relaxed mb-6"
           style={{ animationDelay: '500ms', fontSize: '15px', color: '#666666' }}
         >
-          Credit cards, loans, medical bills — it all counts.
-          Most people who check save up to 25% on what they owe.
+          An estimate is fine. Include all credit card and personal loan balances.
+          Don&apos;t include auto loans, mortgages, or medical bills.
         </p>
 
         <div
@@ -77,22 +77,14 @@ export function DebtSlider({ onSubmit }: DebtSliderProps) {
             padding: '20px',
           }}
         >
-          <div className="flex items-start gap-3">
-            <Image
-              src="/clock-icon.png"
-              alt="Clock"
-              width={64}
-              height={64}
-              unoptimized
-              className="flex-shrink-0 animate-float"
-            />
-            <p style={{ fontSize: '14px', color: '#1B2A4A', lineHeight: '1.6' }}>
-              We&apos;ve helped 100,000+ Americans save an average of{' '}
-              <span className="font-bold" style={{ color: '#0C7663' }}>$16,714</span> on their debt.
-              Most people save{' '}
-              <span className="font-bold" style={{ color: '#0C7663' }}>2–4 years</span> on their payoff timeline.
-            </p>
-          </div>
+          <p className="font-semibold mb-1" style={{ fontSize: '14px', color: '#1B2A4A' }}>
+            Did You Know?
+          </p>
+          <p style={{ fontSize: '14px', color: '#1B2A4A', lineHeight: '1.6' }}>
+            The average American&apos;s credit card debt rose by{' '}
+            <span className="font-bold" style={{ color: '#0C7663' }}>15%</span> in the past year, reaching over{' '}
+            <span className="font-bold" style={{ color: '#0C7663' }}>$7,900</span> — the highest jump in over two decades.
+          </p>
         </div>
       </div>
     </div>

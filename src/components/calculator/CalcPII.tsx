@@ -190,7 +190,7 @@ export function CalcPII({ debtAmount, potentialSavings, yearsSaved, onSubmit }: 
           </Button>
 
           <p className="text-center mt-2" style={{ fontSize: '12px', color: '#999999' }}>
-            Typically costs $50-$100.
+            $100 value, zero obligation
           </p>
         </div>
       </div>

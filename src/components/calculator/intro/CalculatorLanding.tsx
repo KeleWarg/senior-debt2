@@ -47,18 +47,18 @@ export function CalculatorLanding({
               className="animate-fade-in-up font-display text-display sm:text-display-md lg:text-display-lg mb-2"
               style={{ animationDelay: '200ms', color: '#1B2A4A' }}
             >
-              Resolve your debt for up to{' '}
+              Resolve Your Debt For Up to{' '}
               <br className="hidden sm:block" />
-              <span className="whitespace-nowrap" style={{ color: '#0C7663' }}>half of what you owe.</span>
+              <span className="whitespace-nowrap" style={{ color: '#0C7663' }}>50% Less Than What You Owe</span>
             </h1>
 
             <p
               className="animate-fade-in-up leading-relaxed mb-3 max-w-[480px]"
               style={{ animationDelay: '250ms', fontSize: '15px', color: '#666666' }}
             >
-              The average American with $15,000 in credit card debt could be debt-free by{' '}
+              With a structured debt relief plan, Americans with $20K+ in debt could become completely debt-free by{' '}
               <span className="font-bold" style={{ color: '#0C7663' }}>2028</span> instead of{' '}
-              <span className="font-bold" style={{ color: '#EB4015' }}>2049</span> on minimum payments.
+              <span className="font-bold" style={{ color: '#EB4015' }}>2049</span> by making only minimum payments.
             </p>
 
             <div

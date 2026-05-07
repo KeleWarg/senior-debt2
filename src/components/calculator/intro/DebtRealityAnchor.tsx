@@ -32,12 +32,10 @@ export function DebtRealityAnchor({ children, onCta }: { children?: React.ReactN
           Compare your options
         </p>
         <h2 className="font-sans text-center mb-4 max-w-[500px] mx-auto text-[32px] sm:text-[38px] text-neutral-800 leading-[1.15] font-semibold">
-          See the difference debt relief could make
+          Instead of paying double, settle for half
         </h2>
         <p className="text-center max-w-[520px] mx-auto mb-10 text-[15px] text-neutral-500 leading-relaxed">
-          Instead of paying back 90–100% of your balance plus interest, debt relief
-          programs negotiate to settle for as little as{' '}
-          <span className="font-semibold text-neutral-800">50%</span>.
+          See the difference debt relief makes on a $25K balance
         </p>
 
         {children}

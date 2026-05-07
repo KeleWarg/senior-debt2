@@ -1,7 +1,6 @@
 'use client'
 
 import * as React from 'react'
-import Image from 'next/image'
 import { Shield, Check, Users } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { cn } from '@/lib/utils'
@@ -117,31 +116,6 @@ export function CalcLoader({ onComplete }: CalcLoaderProps) {
             </p>
           </div>
 
-          <div
-            className="mt-6 text-left"
-            style={{
-              backgroundColor: '#EEF2F7',
-              borderRadius: '12px',
-              padding: '20px',
-            }}
-          >
-            <div className="flex items-start gap-3">
-              <Image
-                src="/clock-icon.png"
-                alt="Clock"
-                width={64}
-                height={64}
-                unoptimized
-                className="flex-shrink-0 animate-float"
-              />
-              <p style={{ fontSize: '14px', color: '#1B2A4A', lineHeight: '1.6' }}>
-                Americans have resolved over{' '}
-                <span className="font-bold" style={{ color: '#0C7663' }}>$10B</span> in debt
-                through relief programs. On average, participants save{' '}
-                <span className="font-bold" style={{ color: '#0C7663' }}>50%</span> of their enrolled debt.
-              </p>
-            </div>
-          </div>
 
           <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 mt-8 text-neutral-500">
             <div className="flex items-center gap-2">

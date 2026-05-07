@@ -18,20 +18,32 @@ interface TestimonialData {
 const TESTIMONIALS: TestimonialData[] = [
   {
     quote:
-      'Very professional and accurate when setting up my account. Kept in touch throughout the process. Seemed to really care about helping me resolve my debt to feel financially stable once again.',
-    name: 'Jenifer O\u2019Connor',
-    initials: 'JO',
+      'Americor paid all my medical bills that had went into collections with an affordable monthly payment and my credit score went up significantly.',
+    name: 'Crystal Jordan',
+    initials: 'CJ',
+    color: '#2A6B5A',
+    rating: 5,
+    image: '/testimonial-crystal-jordan.png',
+    partnerLogo: '/americor_logo.gif',
+    partnerName: 'Americor',
+    date: 'Sep 14, 2025',
+  },
+  {
+    quote:
+      'Having paid off a debt through Freedom Debt Relief is definitely a "relief." I appreciate the assistance from FDR as it has made a rather low spot in my life easier to handle and cope with.',
+    name: 'Rich Cupertino',
+    initials: 'RC',
     color: '#D4A843',
     rating: 5,
-    image: '/testimonial-jenifer-oconnor.png',
+    image: '/testimonial-rich-cupertino.png',
     partnerLogo: '/freedom-debt-relief_logo.png',
     partnerName: 'Freedom Debt Relief',
     date: 'Jan 22, 2026',
   },
   {
     quote:
-      'I have been very nervous to do this again since I was screwed by another company. My experience so far has been awesome. They\u2019ve negotiated 2 of my 4 debts already with great results.',
-    name: 'Sue A. Gleason',
+      'I have been very nervous to do this again since I was screwed by another company. My experience so far has been awesome here. They have been able to negotiate 2 of my 4 debts so far with good results. I would highly recommend them.',
+    name: 'Sue A Gleason',
     initials: 'SG',
     color: '#4A6274',
     rating: 5,
@@ -42,14 +54,14 @@ const TESTIMONIALS: TestimonialData[] = [
   },
   {
     quote:
-      'Having paid off a debt through Freedom Debt Relief is definitely a "relief." I appreciate the assistance from FDR as it has made a rather low spot in my life easier to handle and cope with.',
-    name: 'Rich Cupertino',
-    initials: 'RC',
-    color: '#2A6B5A',
+      'After speaking with Andrew at Pacific Debt Relief, I felt confident that I could manage such a program. He has been terrific in helping me navigate the process — shows a lot of care and concern for my situation.',
+    name: 'Bob Hirst',
+    initials: 'BH',
+    color: '#7B5EA7',
     rating: 5,
-    image: '/testimonial-rich-cupertino.png',
-    partnerLogo: '/freedom-debt-relief_logo.png',
-    partnerName: 'Freedom Debt Relief',
+    image: '/testimonial-bob-hirst.png',
+    partnerLogo: '/pacific_logo.png',
+    partnerName: 'Pacific Debt',
     date: 'Mar 19, 2026',
   },
 ]
@@ -133,7 +145,7 @@ export function Testimonials() {
     <section className="w-full px-4 sm:px-6 lg:px-10 py-12 sm:py-16">
       <div className="max-w-[1120px] mx-auto">
         <p className="text-[13px] font-medium text-neutral-500 text-center mb-3 tracking-wide uppercase">
-          What others are saying
+          What customers are saying
         </p>
         <h2
           className="font-sans text-center mb-10 text-[32px] sm:text-[38px] leading-[1.15] font-semibold"
@@ -142,7 +154,7 @@ export function Testimonials() {
           Real people, real relief
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
           {TESTIMONIALS.map((t) => (
             <TestimonialCard key={t.name} testimonial={t} />
           ))}
