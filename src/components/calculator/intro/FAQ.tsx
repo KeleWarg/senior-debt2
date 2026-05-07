@@ -67,9 +67,9 @@ export function FAQ() {
                 >
                   <div style={{ fontSize: '14px', color: '#4B5563', lineHeight: '1.6', paddingBottom: '20px' }}>
                     <p>{item.answer}</p>
-                    {'bullets' in item && (item as { bullets: string[] }).bullets && (
+                    {'bullets' in item && (item as { bullets: readonly string[] }).bullets && (
                       <ul style={{ marginTop: '12px', paddingLeft: '20px', listStyleType: 'disc' }}>
-                        {(item as { bullets: string[] }).bullets.map((bullet, j) => (
+                        {(item as { bullets: readonly string[] }).bullets.map((bullet, j) => (
                           <li key={j} style={{ marginBottom: j === 0 ? '8px' : 0 }}>
                             {bullet}
                           </li>
