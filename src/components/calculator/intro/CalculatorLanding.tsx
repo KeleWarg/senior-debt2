@@ -47,9 +47,9 @@ export function CalculatorLanding({
               className="animate-fade-in-up font-display text-display sm:text-display-md lg:text-display-lg mb-2"
               style={{ animationDelay: '200ms', color: '#1B2A4A' }}
             >
-              Resolve Your Debt For Up to{' '}
+              Fast-Track Your Way Out of Debt,{' '}
               <br className="hidden sm:block" />
-              <span className="whitespace-nowrap" style={{ color: '#0C7663' }}>50% Less Than What You Owe</span>
+              <span className="whitespace-nowrap" style={{ color: '#0C7663' }}>For Up to 50% of What You Owe</span>
             </h1>
 
             <p
