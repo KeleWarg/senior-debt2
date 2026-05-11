@@ -189,7 +189,7 @@ export function CalcPII({ debtAmount, potentialSavings, yearsSaved, onSubmit }: 
             Get My Free Report
           </Button>
 
-          <p className="text-center mt-2" style={{ fontSize: '12px', color: '#999999' }}>
+          <p className="text-center mt-2 font-bold" style={{ fontSize: '15px', color: '#0C7663' }}>
             $100 value, zero obligation
           </p>
         </div>

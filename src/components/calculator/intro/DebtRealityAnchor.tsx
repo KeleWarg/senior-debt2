@@ -27,7 +27,7 @@ export function DebtRealityAnchor({ children, onCta }: { children?: React.ReactN
 
   return (
     <div ref={sectionRef} className="w-full" style={{ backgroundColor: '#E8F5EC' }}>
-      <section className="w-full max-w-[720px] mx-auto px-4 sm:px-6 pt-16 pb-10">
+      <section className="w-full max-w-[720px] mx-auto px-4 sm:px-6 pt-20 sm:pt-24 pb-10">
         <p className="text-[13px] font-medium text-neutral-500 text-center mb-3 tracking-wide uppercase">
           Compare your options
         </p>
