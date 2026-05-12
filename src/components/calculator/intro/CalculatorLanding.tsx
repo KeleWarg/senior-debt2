@@ -49,7 +49,7 @@ export function CalculatorLanding({
             >
               Fast-Track Your Way Out of Debt,{' '}
               <br className="hidden sm:block" />
-              <span className="whitespace-nowrap" style={{ color: '#0C7663' }}>For Up to 50% of What You Owe</span>
+              <span className="whitespace-nowrap" style={{ color: '#0C7663' }}>For Up to 50% Less Than You Owe</span>
             </h1>
 
             <p
