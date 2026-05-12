@@ -99,7 +99,7 @@ export const CLOSING_TRUST = {
 /** Landing radio labels (same order as MotivationDriver keys above) */
 export const MOTIVATION_OPTIONS: { id: MotivationDriver; label: string }[] = [
   { id: 'debt_free_fast', label: 'Getting out of debt faster' },
-  { id: 'pay_less_interest', label: 'Reduce my total debt amount' },
+  { id: 'pay_less_interest', label: 'Reducing my total debt amount' },
   { id: 'lower_monthly_payments', label: 'Lowering my monthly payments' },
   { id: 'all_of_the_above', label: "I'm not sure yet" },
 ]
