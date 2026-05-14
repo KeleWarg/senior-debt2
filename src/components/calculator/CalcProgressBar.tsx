@@ -10,7 +10,6 @@ const STEP_PROGRESS: Partial<Record<CalcStep, number>> = {
   monthlyPayment: 90,
   loader: 93,
   reveal: 100,
-  pii: 100,
 }
 
 interface CalcProgressBarProps {

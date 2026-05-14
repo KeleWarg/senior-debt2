@@ -3,6 +3,6 @@ export { DebtSlider } from './DebtSlider'
 export { PaymentSlider } from './PaymentSlider'
 export { CalcLoader } from './CalcLoader'
 export { RevealScreen } from './RevealScreen'
-export { CalcPII } from './CalcPII'
+
 export { ResultsPage } from './ResultsPage'
 export { CalcProgressBar } from './CalcProgressBar'

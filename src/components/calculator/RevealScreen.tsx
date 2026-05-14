@@ -4,7 +4,7 @@ import * as React from 'react'
 import Image from 'next/image'
 import confetti from 'canvas-confetti'
 import { Button } from '@/components/ui'
-import { StickyButtonContainer } from '@/components/ui/StickyButtonContainer'
+
 import { formatCurrency, cn } from '@/lib/utils'
 import type { DebtFreeResult, ReliefResult } from '@/lib/calculator'
 
@@ -91,7 +91,7 @@ interface RevealScreenProps {
   monthlyPayment: number
   currentPath: DebtFreeResult
   reliefPath: ReliefResult
-  onContinue: () => void
+  onContinue?: () => void
   skipIntro?: boolean
 }
 
@@ -373,6 +373,24 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
           </div>
         </div>
 
+        {/* CTA */}
+        <div
+          className={cn(
+            'w-full mb-5 transition-all duration-700',
+            stage >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+          )}
+        >
+          <Button fullWidth showTrailingIcon onClick={onContinue}>
+            See if you Qualify
+          </Button>
+          <div className="flex items-center justify-center gap-2 mt-3">
+            <Image src="/icon-shield.png" alt="Shield" width={20} height={20} unoptimized />
+            <span style={{ fontSize: '12px', color: '#999999' }}>
+              Your information is secure and never shared
+            </span>
+          </div>
+        </div>
+
         {/* Stat cards 2×2 grid */}
         <div
           className={cn(
@@ -419,25 +437,6 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
           </p>
         </div>
 
-        {/* CTA */}
-        <div
-          className={cn(
-            'w-full transition-all duration-700',
-            stage >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
-          )}
-        >
-          <StickyButtonContainer>
-            <Button fullWidth showTrailingIcon onClick={onContinue}>
-              See if you Qualify
-            </Button>
-            <div className="flex items-center justify-center gap-2 mt-3">
-              <Image src="/icon-shield.png" alt="Shield" width={20} height={20} unoptimized />
-              <span style={{ fontSize: '12px', color: '#999999' }}>
-                Your information is secure and never shared
-              </span>
-            </div>
-          </StickyButtonContainer>
-        </div>
       </div>
     </div>
   )

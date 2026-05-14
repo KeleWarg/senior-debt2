@@ -10,7 +10,6 @@ export type CalcStep =
   | 'monthlyPayment'
   | 'loader'
   | 'reveal'
-  | 'pii'
 
 /** v3 landing motivation — maps to calculator defaults */
 export type MotivationDriver =

@@ -6,7 +6,6 @@ import {
   DebtSlider,
   PaymentSlider,
   RevealScreen,
-  CalcPII,
 } from '@/components/calculator'
 import { CalculatorLanding } from '@/components/calculator/intro/CalculatorLanding'
 import { CalcProgressBar } from '@/components/calculator/CalcProgressBar'
@@ -25,7 +24,6 @@ const STEP_ORDER: CalcStep[] = [
   'monthlyPayment',
   'loader',
   'reveal',
-  'pii',
 ]
 
 const FULL_SCREEN_STEPS: CalcStep[] = ['intro', 'loader']
@@ -40,8 +38,6 @@ export default function CalculatorPage() {
   })
   const [currentResult, setCurrentResult] = React.useState<DebtFreeResult | null>(null)
   const [reliefResult, setReliefResult] = React.useState<ReliefResult | null>(null)
-  const hasSeenReveal = React.useRef(false)
-
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
   }, [step])
@@ -131,36 +127,8 @@ export default function CalculatorPage() {
             monthlyPayment={data.monthlyPayment}
             currentPath={currentResult}
             reliefPath={reliefResult}
-            onContinue={() => {
-              hasSeenReveal.current = true
-              goTo('pii')
-            }}
-            skipIntro={hasSeenReveal.current}
           />
         )
-      case 'pii': {
-        const cappedMonths = currentResult?.reachable ? currentResult.months : 420
-        const mSaved = Math.max(0, cappedMonths - (reliefResult?.months ?? 0))
-        return (
-          <CalcPII
-            debtAmount={data.debtAmount}
-            potentialSavings={
-              currentResult?.reachable
-                ? currentResult.totalPaid - (reliefResult?.totalCost ?? 0)
-                : data.debtAmount - (reliefResult?.totalCost ?? 0)
-            }
-            yearsSaved={
-              mSaved >= 12
-                ? `${Math.floor(mSaved / 12)} years`
-                : `${mSaved} months`
-            }
-            onSubmit={(pii) => {
-              update(pii)
-              alert('Lead submitted! (API integration pending)')
-            }}
-          />
-        )
-      }
       default:
         return null
     }
@@ -178,7 +146,7 @@ export default function CalculatorPage() {
           </div>
         </div>
       )}
-      <div className={`flex-1 min-h-0 ${step === 'pii' ? 'pb-44' : 'pb-24 sm:pb-0'}`}>
+      <div className="flex-1 min-h-0 pb-24 sm:pb-0">
         {renderStep()}
       </div>
     </div>
