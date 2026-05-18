@@ -377,7 +377,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
         <div
           className={cn(
             'w-full mb-5 transition-all duration-700',
-            stage >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+            stage >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
           )}
         >
           <Button fullWidth showTrailingIcon onClick={onContinue}>
