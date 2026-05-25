@@ -1,7 +1,6 @@
 'use client'
 
 import * as React from 'react'
-import { Button } from '@/components/ui'
 import { trackEvent } from '@/components/calculator/shared/tracking'
 
 export function DebtRealityAnchor({ children, onCta }: { children?: React.ReactNode; onCta?: () => void }) {
@@ -16,7 +15,7 @@ export function DebtRealityAnchor({ children, onCta }: { children?: React.ReactN
       ([entry]) => {
         if (entry.isIntersecting && entry.intersectionRatio >= 0.3 && !viewed.current) {
           viewed.current = true
-          trackEvent('section_viewed', { section: 'comparison_table' })
+          trackEvent('section_viewed', { section: 'comparison_timeline' })
         }
       },
       { threshold: [0.3] }
@@ -27,26 +26,18 @@ export function DebtRealityAnchor({ children, onCta }: { children?: React.ReactN
 
   return (
     <div ref={sectionRef} className="w-full" style={{ backgroundColor: '#E8F5EC' }}>
-      <section className="w-full max-w-[720px] mx-auto px-4 sm:px-6 pt-20 sm:pt-24 pb-10">
+      <section className="w-full max-w-[720px] mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-10">
         <p className="text-[13px] font-medium text-neutral-500 text-center mb-3 tracking-wide uppercase">
-          Compare your options
+          Compare your paths
         </p>
         <h2 className="font-sans text-center mb-4 max-w-[500px] mx-auto text-[32px] sm:text-[38px] text-neutral-800 leading-[1.15] font-semibold">
-          Instead of paying double, settle for half
+          Three years to clear it. Or fifteen.
         </h2>
         <p className="text-center max-w-[520px] mx-auto mb-10 text-[15px] text-neutral-500 leading-relaxed">
-          See the difference debt relief makes on a $25K balance
+          See what a structured program does to $45K in business-origin debt
         </p>
 
         {children}
-
-        {onCta && (
-          <div className="w-full max-w-md mx-auto mt-10">
-            <Button fullWidth showTrailingIcon onClick={onCta}>
-              Calculate your debt-free date
-            </Button>
-          </div>
-        )}
       </section>
     </div>
   )

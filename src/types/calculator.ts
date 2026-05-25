@@ -8,6 +8,7 @@ export type CalcStep =
   | 'intro'
   | 'debtAmount'
   | 'monthlyPayment'
+  | 'revenue'
   | 'loader'
   | 'reveal'
 
@@ -18,11 +19,18 @@ export type MotivationDriver =
   | 'lower_monthly_payments'
   | 'debt_free_date'
   | 'all_of_the_above'
+  | 'stop_credit_damage'
+  | 'resolve_faster'
+  | 'keep_cash_flow'
+  | 'separate_liability'
 
 export interface CalcFunnelData {
   debtAmount: number
+  /** Fraction of total debt that is business-related (0–1) */
+  businessDebtShare?: number
   interestRate: number
   monthlyPayment: number
+  monthlyRevenue?: number
   motivationDriver?: MotivationDriver | null
   firstName?: string
   lastName?: string

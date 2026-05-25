@@ -51,6 +51,10 @@ export const MOTIVATION_DEFAULTS: Record<
   lower_monthly_payments: { debtAmount: 25000, monthlyPayment: 250 },
   debt_free_date: { debtAmount: 15000, monthlyPayment: 350 },
   all_of_the_above: { debtAmount: 20000, monthlyPayment: 350 },
+  stop_credit_damage: { debtAmount: 20000, monthlyPayment: 400 },
+  resolve_faster: { debtAmount: 20000, monthlyPayment: 400 },
+  keep_cash_flow: { debtAmount: 25000, monthlyPayment: 350 },
+  separate_liability: { debtAmount: 20000, monthlyPayment: 350 },
 }
 
 export const FAQ_ITEMS = [
@@ -98,8 +102,8 @@ export const CLOSING_TRUST = {
 
 /** Landing radio labels (same order as MotivationDriver keys above) */
 export const MOTIVATION_OPTIONS: { id: MotivationDriver; label: string }[] = [
-  { id: 'debt_free_fast', label: 'Getting out of debt faster' },
-  { id: 'pay_less_interest', label: 'Reducing my total debt amount' },
-  { id: 'lower_monthly_payments', label: 'Lowering my monthly payments' },
-  { id: 'all_of_the_above', label: "I'm not sure yet" },
+  { id: 'stop_credit_damage', label: 'Stopping business debt from sinking my credit' },
+  { id: 'resolve_faster', label: 'Resolving it in years, not decades' },
+  { id: 'keep_cash_flow', label: 'Keeping cash flow alive for the business' },
+  { id: 'separate_liability', label: 'Separating business liability from personal' },
 ]

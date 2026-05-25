@@ -1,17 +1,22 @@
 'use client'
 
 import * as React from 'react'
-import Image from 'next/image'
 import confetti from 'canvas-confetti'
 import { Button } from '@/components/ui'
-
 import { formatCurrency, cn } from '@/lib/utils'
-import type { DebtFreeResult, ReliefResult } from '@/lib/calculator'
 
 const NAVY = '#1B2A4A'
+const TEAL = '#007AC8'
 const GREEN = '#0C7663'
 const RED = '#EB4015'
-const GREY = '#B0B0B0'
+const MUTED = '#888899'
+const CAPTION_GREY = '#999999'
+const SEGMENT_GREY = '#E0E0E6'
+
+const YEARS_SAVED = 12
+const START_YEAR = 2026
+const CURRENT_END_YEAR = 2041
+const PROGRAM_END_YEAR = 2029
 
 const VB_W = 480
 const VB_H = 240
@@ -19,58 +24,30 @@ const PAD = { top: 32, right: 48, bottom: 44, left: 48 }
 const INNER_W = VB_W - PAD.left - PAD.right
 const INNER_H = VB_H - PAD.top - PAD.bottom
 
-function generateAmortizationCurve(
-  principal: number,
-  apr: number,
-  monthlyPayment: number,
-  actualMonths: number,
-  maxMonths: number,
-  reachable: boolean
-): string {
+const TOTAL_YEARS = CURRENT_END_YEAR - START_YEAR
+const RELIEF_YEARS = PROGRAM_END_YEAR - START_YEAR
+
+function generateCurrentPaymentCurve(): string {
   const pts: string[] = []
-  const monthlyRate = apr / 100 / 12
-
-  if (!reachable) {
-    const n = 60
-    for (let i = 0; i <= n; i++) {
-      const t = i / n
-      const remaining = Math.max(0.82, 1 - t * 0.18)
-      const x = PAD.left + t * INNER_W
-      const y = PAD.top + (1 - remaining) * INNER_H
-      pts.push(`${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`)
-    }
-    return pts.join(' ')
-  }
-
-  const balances: number[] = [principal]
-  let b = principal
-  for (let m = 0; m < actualMonths && b > 0; m++) {
-    const interest = b * monthlyRate
-    b -= Math.min(monthlyPayment - interest, b)
-    balances.push(Math.max(0, b))
-  }
-
-  for (let m = 0; m < balances.length; m++) {
-    const x = PAD.left + (m / maxMonths) * INNER_W
-    const remaining = balances[m] / principal
+  const n = 60
+  for (let i = 0; i <= n; i++) {
+    const t = i / n
+    const remaining = Math.max(0, 1 - t * t * 0.3 - t * 0.7)
+    const x = PAD.left + t * INNER_W
     const y = PAD.top + (1 - remaining) * INNER_H
-    pts.push(`${m === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`)
+    pts.push(`${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`)
   }
   return pts.join(' ')
 }
 
-function generateReliefCurve(
-  principal: number,
-  reliefMonths: number,
-  maxMonths: number
-): string {
+function generateProgramCurve(): string {
   const pts: string[] = []
-  const n = 40
+  const reliefFrac = RELIEF_YEARS / TOTAL_YEARS
+  const n = 30
   for (let i = 0; i <= n; i++) {
     const t = i / n
-    const month = t * reliefMonths
-    const x = PAD.left + (month / maxMonths) * INNER_W
-    const remaining = 1 - t
+    const x = PAD.left + t * reliefFrac * INNER_W
+    const remaining = Math.max(0, 1 - t * t * 0.4 - t * 0.6)
     const y = PAD.top + (1 - remaining) * INNER_H
     pts.push(`${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`)
   }
@@ -85,27 +62,63 @@ function generateAreaPath(linePath: string): string {
   return `${linePath} L ${lastX} ${bottomY} L ${firstX} ${bottomY} Z`
 }
 
+const DONUT_VB = 240
+const DONUT_CENTER = DONUT_VB / 2
+const DONUT_OUTER_R = 100
+const DONUT_INNER_R = 55
+const DONUT_STROKE = DONUT_OUTER_R - DONUT_INNER_R
+const DONUT_R = (DONUT_OUTER_R + DONUT_INNER_R) / 2
+const DONUT_CIRC = 2 * Math.PI * DONUT_R
+
+function roundTo(value: number, multiple: number): number {
+  return Math.round(value / multiple) * multiple
+}
+
+function useInView(threshold = 0.3) {
+  const ref = React.useRef<HTMLDivElement>(null)
+  const [inView, setInView] = React.useState(false)
+  React.useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true)
+          observer.disconnect()
+        }
+      },
+      { threshold }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [threshold])
+  return [ref, inView] as const
+}
+
 interface RevealScreenProps {
   debtAmount: number
   interestRate: number
   monthlyPayment: number
-  currentPath: DebtFreeResult
-  reliefPath: ReliefResult
+  businessDebtShare: number
   onContinue?: () => void
   skipIntro?: boolean
 }
 
-export function RevealScreen({ debtAmount, interestRate, monthlyPayment, currentPath, reliefPath, onContinue, skipIntro }: RevealScreenProps) {
-  const clipId = React.useId()
-  const [stage, setStage] = React.useState(skipIntro ? 4 : 0)
+export function RevealScreen({
+  debtAmount,
+  businessDebtShare,
+  onContinue,
+  skipIntro,
+}: RevealScreenProps) {
+  const [stage, setStage] = React.useState(skipIntro ? 2 : 0)
+  const [pieRef, pieInView] = useInView(0.2)
+  const [barsRef, barsInView] = useInView(0.2)
 
   React.useEffect(() => {
     if (skipIntro) return
 
     const t1 = setTimeout(() => setStage(1), 300)
-    const t2 = setTimeout(() => setStage(2), 1200)
-    const t3 = setTimeout(() => setStage(3), 2000)
-    const t4 = setTimeout(() => setStage(4), 2600)
+    const t2 = setTimeout(() => setStage(2), 1000)
 
     const tConfetti = setTimeout(() => {
       const duration = 800
@@ -116,7 +129,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
           angle: 60,
           spread: 70,
           origin: { x: 0, y: 0.6 },
-          colors: ['#007AC8', '#0C7663', '#FFB934'],
+          colors: [TEAL, GREEN, '#FFB934'],
           gravity: 1.2,
         })
         confetti({
@@ -124,7 +137,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
           angle: 120,
           spread: 70,
           origin: { x: 1, y: 0.6 },
-          colors: ['#007AC8', '#0C7663', '#FFB934'],
+          colors: [TEAL, GREEN, '#FFB934'],
           gravity: 1.2,
         })
         if (Date.now() < end) requestAnimationFrame(frame)
@@ -132,89 +145,243 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
       frame()
     }, 400)
 
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(tConfetti) }
+    return () => {
+      clearTimeout(t1)
+      clearTimeout(t2)
+      clearTimeout(tConfetti)
+    }
   }, [skipIntro])
 
-  const cappedCurrentMonths = currentPath.reachable ? currentPath.months : 420
-  const reliefIsFaster = reliefPath.months < cappedCurrentMonths
-  const monthsSaved = reliefIsFaster
-    ? cappedCurrentMonths - reliefPath.months
-    : 0
-  const yearsSaved = Math.floor(monthsSaved / 12)
-  const timeSavedLabel = monthsSaved >= 12
-    ? `${yearsSaved} ${yearsSaved === 1 ? 'year' : 'yrs'}`
-    : `${monthsSaved} mo`
-  const totalSavings = currentPath.reachable
-    ? currentPath.totalPaid - reliefPath.totalCost
-    : debtAmount - reliefPath.totalCost
+  const businessOriginDebt = roundTo(debtAmount * businessDebtShare, 500)
+  const personalOriginDebt = debtAmount - businessOriginDebt
+  const businessPct = Math.round(businessDebtShare * 100)
+  const personalPct = 100 - businessPct
+  const currentPaymentTotal = roundTo(businessOriginDebt * 1.95, 500)
+  const estimatedSettlement = roundTo(businessOriginDebt * 0.50, 500)
+  const amountLessPaid = currentPaymentTotal - estimatedSettlement
 
-  const nowYear = new Date().getFullYear()
-  const longestMonths = Math.max(cappedCurrentMonths, reliefPath.months)
-  const maxMonths = longestMonths
-  const endYear = nowYear + Math.ceil(longestMonths / 12)
-  const currentEndMonth = cappedCurrentMonths
-  const reliefEndMonth = reliefPath.months
+  const businessArc = (businessPct / 100) * DONUT_CIRC
 
-  const currentD = generateAmortizationCurve(debtAmount, interestRate, monthlyPayment, cappedCurrentMonths, maxMonths, currentPath.reachable)
-  const reliefD = generateReliefCurve(debtAmount, reliefPath.months, maxMonths)
-
-  const reliefEndX = PAD.left + (reliefEndMonth / maxMonths) * INNER_W
-  const currentEndX = PAD.left + (currentEndMonth / maxMonths) * INNER_W
+  const clipId = React.useId()
+  const currentD = generateCurrentPaymentCurve()
+  const reliefD = generateProgramCurve()
+  const reliefEndX = PAD.left + (RELIEF_YEARS / TOTAL_YEARS) * INNER_W
+  const currentEndX = PAD.left + INNER_W
   const bottomY = PAD.top + INNER_H
 
-  const totalYearSpan = Math.max(1, endYear - nowYear)
-  const yearStep = totalYearSpan <= 4 ? 1 : totalYearSpan <= 8 ? 2 : totalYearSpan <= 15 ? 3 : 5
+  const yearStep = 3
   const xTicks: { year: number; x: number }[] = []
-  for (let y = nowYear; y <= endYear; y += yearStep) {
-    const t = (y - nowYear) / totalYearSpan
+  for (let y = START_YEAR; y <= CURRENT_END_YEAR; y += yearStep) {
+    const t = (y - START_YEAR) / TOTAL_YEARS
     xTicks.push({ year: y, x: PAD.left + t * INNER_W })
   }
-  if (xTicks[xTicks.length - 1]?.year !== endYear) {
-    xTicks.push({ year: endYear, x: PAD.left + INNER_W })
+  if (xTicks[xTicks.length - 1]?.year !== CURRENT_END_YEAR) {
+    xTicks.push({ year: CURRENT_END_YEAR, x: PAD.left + INNER_W })
   }
-
-  const revealWidth = stage >= 1 ? INNER_W + PAD.right : 0
 
   return (
     <div className="w-full max-w-[555px] mx-auto px-4 sm:px-6 pt-2 sm:pt-4 pb-4 sm:pb-8">
-      <div className="flex flex-col items-start w-full has-sticky-button">
-        {/* Years saved callout */}
-        {(reliefIsFaster || !currentPath.reachable) && (
-          <div
-            className="animate-fade-in-up inline-flex items-center gap-2 rounded-full px-4 py-2 mb-4"
-            style={{ backgroundColor: '#EEF2F7' }}
-          >
-            <div
-              className="flex items-center justify-center rounded-full flex-shrink-0"
-              style={{ width: '20px', height: '20px', backgroundColor: '#007AC8' }}
-            >
-              <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
-                <path d="M4 8.5L6.5 11L12 5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <span style={{ fontSize: '14px', fontWeight: 700, color: '#1B2A4A' }}>
-              {!currentPath.reachable
-                ? 'You could save 30+ years with a relief program'
-                : `You could save ${timeSavedLabel} and ${formatCurrency(Math.max(0, totalSavings))}`}
-            </span>
-          </div>
-        )}
+      <div className="flex flex-col items-start w-full">
 
-        <h1
-          className="animate-fade-in-up font-display text-headline-lg sm:text-display lg:text-display-md mb-2"
-          style={{ color: NAVY }}
-        >
-          Here&apos;s your <span style={{ color: '#007AC8' }}>debt-free timeline.</span>
-        </h1>
+        {/* ── Phase label — H3 ── */}
         <p
-          className="animate-fade-in-up leading-relaxed mb-6"
-          style={{ animationDelay: '100ms', fontSize: '15px', color: '#666666' }}
+          className={cn(
+            'mb-3 transition-opacity duration-500',
+            stage >= 1 ? 'opacity-100' : 'opacity-0'
+          )}
+          style={{
+            fontSize: '14px',
+            fontWeight: 600,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase' as const,
+            color: MUTED,
+          }}
         >
-          Two paths compared — minimum payments vs. a relief program.
+          You Qualify
         </p>
 
-        {/* Chart */}
-        <div className="w-full bg-white border border-neutral-200 rounded-xl overflow-hidden mb-5">
+        {/* ── Headline — H1 ── */}
+        <h1
+          className={cn(
+            'font-display mb-3 transition-opacity duration-700',
+            stage >= 1 ? 'opacity-100' : 'opacity-0'
+          )}
+          style={{
+            fontSize: 'clamp(32px, 5vw, 40px)',
+            fontWeight: 600,
+            lineHeight: 1.15,
+            color: NAVY,
+          }}
+        >
+          Of your {formatCurrency(debtAmount)} total,{' '}
+          <span style={{ color: TEAL }}>{formatCurrency(businessOriginDebt)} qualifies</span> for
+          entrepreneur-tier relief.
+        </h1>
+
+        {/* ── Sub-copy — Body lead ── */}
+        <p
+          className={cn(
+            'mb-10 transition-opacity duration-700',
+            stage >= 1 ? 'opacity-100' : 'opacity-0'
+          )}
+          style={{
+            fontSize: '15px',
+            fontWeight: 400,
+            lineHeight: 1.5,
+            color: '#666666',
+            transitionDelay: '200ms',
+          }}
+        >
+          Most owners in your position will pay roughly {formatCurrency(currentPaymentTotal)} on
+          this debt over the next 15 years. Entrepreneur-tier relief drops that to
+          ~{formatCurrency(estimatedSettlement)} over 3. Here&apos;s the breakdown.
+        </p>
+
+        {/* ── Section 1: The split (donut chart) ── */}
+        <div
+          ref={pieRef}
+          className={cn(
+            'w-full rounded-2xl border border-neutral-200 bg-white p-5 sm:p-6 mb-8 transition-all duration-700',
+            stage >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+          )}
+        >
+          <p className="font-bold mb-5" style={{ fontSize: '14px', color: NAVY }}>
+            The split, based on your answers
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center sm:items-center gap-6 sm:gap-8">
+            {/* Donut */}
+            <div className="w-[200px] h-[200px] sm:w-[240px] sm:h-[240px] flex-shrink-0">
+              <svg viewBox={`0 0 ${DONUT_VB} ${DONUT_VB}`} className="w-full h-full">
+                <circle
+                  cx={DONUT_CENTER}
+                  cy={DONUT_CENTER}
+                  r={DONUT_R}
+                  fill="none"
+                  stroke={SEGMENT_GREY}
+                  strokeWidth={DONUT_STROKE}
+                />
+                <circle
+                  cx={DONUT_CENTER}
+                  cy={DONUT_CENTER}
+                  r={DONUT_R}
+                  fill="none"
+                  stroke={TEAL}
+                  strokeWidth={DONUT_STROKE}
+                  strokeDasharray={`${DONUT_CIRC} ${DONUT_CIRC}`}
+                  strokeDashoffset={pieInView ? DONUT_CIRC - businessArc : DONUT_CIRC}
+                  transform={`rotate(-90 ${DONUT_CENTER} ${DONUT_CENTER})`}
+                  style={{ transition: 'stroke-dashoffset 800ms ease-out' }}
+                />
+                <text
+                  x={DONUT_CENTER}
+                  y={DONUT_CENTER - 6}
+                  textAnchor="middle"
+                  fontSize="18"
+                  fontWeight="700"
+                  fill={TEAL}
+                >
+                  {formatCurrency(businessOriginDebt)}
+                </text>
+                <text
+                  x={DONUT_CENTER}
+                  y={DONUT_CENTER + 14}
+                  textAnchor="middle"
+                  fontSize="13"
+                  fill={CAPTION_GREY}
+                >
+                  qualifies
+                </text>
+              </svg>
+            </div>
+
+            {/* Legend */}
+            <div className="flex flex-col gap-4">
+              <div className="flex items-start gap-3">
+                <div
+                  className="w-4 h-4 rounded-sm flex-shrink-0 mt-0.5"
+                  style={{ backgroundColor: TEAL }}
+                />
+                <p style={{ fontSize: '14px', fontWeight: 600, color: NAVY }}>
+                  Qualifies for entrepreneur relief: {formatCurrency(businessOriginDebt)}
+                  <span style={{ color: CAPTION_GREY, fontWeight: 400, marginLeft: '6px' }}>
+                    ({businessPct}%)
+                  </span>
+                </p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div
+                  className="w-4 h-4 rounded-sm flex-shrink-0 mt-0.5"
+                  style={{ backgroundColor: SEGMENT_GREY }}
+                />
+                <p style={{ fontSize: '14px', fontWeight: 600, color: NAVY }}>
+                  Standard consumer relief: {formatCurrency(personalOriginDebt)}
+                  <span style={{ color: CAPTION_GREY, fontWeight: 400, marginLeft: '6px' }}>
+                    ({personalPct}%)
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── CTA (after donut) ── */}
+        <div
+          className={cn(
+            'w-full mb-8 transition-all duration-700',
+            stage >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+          )}
+          style={{ transitionDelay: '100ms' }}
+        >
+          <Button fullWidth showTrailingIcon onClick={onContinue}>
+            Claim my entrepreneur-tier relief
+          </Button>
+          <div className="flex flex-col items-center gap-1 mt-3">
+            <p style={{ fontSize: '14px', color: CAPTION_GREY }}>
+              Your information is secure and never shared
+            </p>
+            <p style={{ fontSize: '13px', color: '#BBBBBB' }}>
+              30 seconds · No signup required · Free
+            </p>
+          </div>
+        </div>
+
+        {/* ── Section 2: The math — H2 header + chart ── */}
+        <h2
+          className={cn(
+            'mb-1 transition-opacity duration-700',
+            stage >= 2 ? 'opacity-100' : 'opacity-0'
+          )}
+          style={{
+            fontSize: 'clamp(20px, 3.5vw, 24px)',
+            fontWeight: 600,
+            lineHeight: 1.25,
+            color: NAVY,
+            transitionDelay: '100ms',
+          }}
+        >
+          Qualifying saves you ~{formatCurrency(amountLessPaid)} and {YEARS_SAVED} years.
+        </h2>
+        <p
+          className={cn(
+            'mb-5 transition-opacity duration-700',
+            stage >= 2 ? 'opacity-100' : 'opacity-0'
+          )}
+          style={{ fontSize: '14px', color: CAPTION_GREY, transitionDelay: '100ms' }}
+        >
+          At your current pace, this debt runs alongside your business for the next
+          15 years. Entrepreneur-tier relief closes it in 3, and gives you back the
+          runway in between.
+        </p>
+
+        <div
+          ref={barsRef}
+          className={cn(
+            'w-full bg-white border border-neutral-200 rounded-xl overflow-hidden mb-4 transition-all duration-700',
+            stage >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+          )}
+          style={{ transitionDelay: '150ms' }}
+        >
           <div className="px-4 pt-4 pb-1">
             <svg
               viewBox={`0 0 ${VB_W} ${VB_H}`}
@@ -228,7 +395,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
                     x={PAD.left}
                     y={0}
                     height={VB_H}
-                    width={revealWidth}
+                    width={barsInView ? INNER_W + PAD.right : 0}
                     style={{ transition: 'width 900ms ease-out' }}
                   />
                 </clipPath>
@@ -260,49 +427,43 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
                 d={generateAreaPath(currentD)}
                 fill={`url(#${clipId}-current)`}
                 className="transition-opacity duration-300"
-                style={{ opacity: stage >= 2 ? 1 : 0 }}
+                style={{ opacity: barsInView ? 1 : 0 }}
               />
               <path
                 d={generateAreaPath(reliefD)}
                 fill={`url(#${clipId}-relief)`}
                 className="transition-opacity duration-300"
-                style={{ opacity: stage >= 2 ? 1 : 0 }}
+                style={{ opacity: barsInView ? 1 : 0 }}
               />
 
-              {/* Lines revealed left-to-right */}
+              {/* Lines */}
               <g clipPath={`url(#${clipId})`}>
                 <path d={currentD} fill="none" stroke={RED} strokeWidth="3" />
                 <path d={reliefD} fill="none" stroke={GREEN} strokeWidth="3" />
-
-                {/* Start dot */}
                 <circle cx={PAD.left} cy={PAD.top} r="4" fill={NAVY} />
-
-                {/* Relief endpoint marker */}
                 <circle
                   cx={reliefEndX}
                   cy={bottomY}
                   r="5"
                   fill={GREEN}
                   className="transition-opacity duration-500"
-                  style={{ opacity: stage >= 2 ? 1 : 0 }}
+                  style={{ opacity: barsInView ? 1 : 0 }}
                 />
-
-                {/* Current endpoint marker */}
                 <circle
                   cx={currentEndX}
                   cy={bottomY}
                   r="4"
                   fill={RED}
                   className="transition-opacity duration-500"
-                  style={{ opacity: stage >= 2 ? 1 : 0 }}
+                  style={{ opacity: barsInView ? 1 : 0 }}
                 />
               </g>
 
               {/* Y-axis labels */}
-              <text x={PAD.left - 6} y={PAD.top + 4} textAnchor="end" fontSize="9" fill={GREY}>
-                {formatCurrency(debtAmount)}
+              <text x={PAD.left - 6} y={PAD.top + 4} textAnchor="end" fontSize="9" fill="#B0B0B0">
+                {formatCurrency(businessOriginDebt)}
               </text>
-              <text x={PAD.left - 6} y={bottomY + 3} textAnchor="end" fontSize="9" fill={GREY}>
+              <text x={PAD.left - 6} y={bottomY + 3} textAnchor="end" fontSize="9" fill="#B0B0B0">
                 $0
               </text>
 
@@ -316,7 +477,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
                 strokeWidth="1"
               />
 
-              {/* X-axis tick labels */}
+              {/* X-axis ticks */}
               {xTicks.map((tick) => (
                 <text
                   key={tick.year}
@@ -330,7 +491,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
                 </text>
               ))}
 
-              {/* Endpoint year annotations */}
+              {/* Endpoint annotations */}
               <text
                 x={reliefEndX}
                 y={bottomY + 32}
@@ -339,131 +500,66 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
                 fontWeight="700"
                 fill={GREEN}
                 className="transition-opacity duration-500"
-                style={{ opacity: stage >= 2 ? 1 : 0 }}
+                style={{ opacity: barsInView ? 1 : 0 }}
               >
-                {reliefPath.year}
+                {PROGRAM_END_YEAR}
               </text>
-
-              {/* Endpoint year annotations — current path */}
-              {currentPath.reachable && (
-                <text
-                  x={currentEndX}
-                  y={bottomY + 32}
-                  textAnchor="middle"
-                  fontSize="11"
-                  fontWeight="700"
-                  fill={RED}
-                  className="transition-opacity duration-500"
-                  style={{ opacity: stage >= 2 ? 1 : 0 }}
-                >
-                  {currentPath.year}
-                </text>
-              )}
+              <text
+                x={currentEndX}
+                y={bottomY + 32}
+                textAnchor="middle"
+                fontSize="11"
+                fontWeight="700"
+                fill={RED}
+                className="transition-opacity duration-500"
+                style={{ opacity: barsInView ? 1 : 0 }}
+              >
+                {CURRENT_END_YEAR}
+              </text>
 
               {/* Legend */}
               <line x1={PAD.left} y1={PAD.top - 16} x2={PAD.left + 18} y2={PAD.top - 16} stroke={GREEN} strokeWidth="3" />
               <text x={PAD.left + 22} y={PAD.top - 13} fontSize="9" fill={NAVY} fontWeight="500">
-                With relief program
+                With entrepreneur relief
               </text>
-              <line x1={PAD.left + 150} y1={PAD.top - 16} x2={PAD.left + 168} y2={PAD.top - 16} stroke={RED} strokeWidth="3" />
-              <text x={PAD.left + 172} y={PAD.top - 13} fontSize="9" fill={GREY}>
-                Minimum payments
+              <line x1={PAD.left + 160} y1={PAD.top - 16} x2={PAD.left + 178} y2={PAD.top - 16} stroke={RED} strokeWidth="3" />
+              <text x={PAD.left + 182} y={PAD.top - 13} fontSize="9" fill="#B0B0B0">
+                At your current payment
               </text>
             </svg>
           </div>
         </div>
 
-        {/* CTA */}
-        <div
-          className={cn(
-            'w-full mb-5 transition-all duration-700',
-            stage >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
-          )}
-        >
-          <Button fullWidth showTrailingIcon onClick={onContinue}>
-            See if you Qualify
-          </Button>
-          <div className="flex items-center justify-center gap-2 mt-3">
-            <Image src="/icon-shield.png" alt="Shield" width={20} height={20} unoptimized />
-            <span style={{ fontSize: '12px', color: '#999999' }}>
-              Your information is secure and never shared
-            </span>
-          </div>
-        </div>
-
-        {/* Stat cards 2×2 grid */}
-        <div
-          className={cn(
-            'w-full rounded-xl border border-neutral-200 bg-white overflow-hidden mb-8 transition-all duration-700',
-            stage >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
-          )}
-        >
-          <div className="grid grid-cols-1">
-            <StatCard
-              label="Total estimated debt reduction"
-              value={formatCurrency(Math.max(0, totalSavings))}
-              description="This is a ballpark estimate of how much your total debt could be reduced through a relief program. Actual results may vary based on your financial situation."
-            />
-            <StatCard
-              label="Estimated monthly payment reduction"
-              value={`${monthlyPayment > 0 ? Math.round(((monthlyPayment - reliefPath.monthlyPayment) / monthlyPayment) * 100) : 0}%`}
-              description="You could potentially reduce your monthly payments, making them more manageable compared to your current obligations."
-              borderTop
-            />
-            <StatCard
-              label="Estimated amount you could settle"
-              value={formatCurrency(Math.round(debtAmount * 0.5))}
-              description="This is the estimated amount you may repay after settlement negotiations, depending on your enrolled program and creditors."
-              borderTop
-            />
-          </div>
-        </div>
-
-        {/* Disclaimer */}
+        {/* ── Disclaimer — Caption ── */}
         <div
           className={cn(
             'w-full rounded-xl px-5 py-4 mb-6 flex items-start gap-3 transition-all duration-700',
-            stage >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+            stage >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
           )}
-          style={{ backgroundColor: '#F0F5FA' }}
+          style={{ backgroundColor: '#F0F5FA', transitionDelay: '350ms' }}
         >
-          <svg className="w-5 h-5 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="none" aria-hidden>
+          <svg
+            className="w-5 h-5 shrink-0 mt-0.5"
+            viewBox="0 0 20 20"
+            fill="none"
+            aria-hidden
+          >
             <circle cx="10" cy="10" r="9" stroke="#6A6A6A" strokeWidth="1.5" />
-            <path d="M10 9v4M10 6.5v.01" stroke="#6A6A6A" strokeWidth="1.5" strokeLinecap="round" />
+            <path
+              d="M10 9v4M10 6.5v.01"
+              stroke="#6A6A6A"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
           </svg>
-          <p style={{ fontSize: '13px', color: '#555555', lineHeight: '1.6' }}>
-            <strong>These estimates are based on common debt relief outcomes.</strong>
-            {' '}Your actual savings, timeline, and payments may differ depending on your debt profile and program terms.
+          <p style={{ fontSize: '13px', color: '#555555', lineHeight: '1.5' }}>
+            These estimates are based on industry-average settlement outcomes from the American
+            Association for Debt Resolution. Your actual results depend on your specific financial
+            situation, creditor agreements, and the program you enroll in. Not a guarantee of savings
+            or timeline.
           </p>
         </div>
-
       </div>
-    </div>
-  )
-}
-
-function StatCard({ label, value, description, borderTop }: {
-  label: string
-  value: string
-  description: string
-  borderTop?: boolean
-}) {
-  return (
-    <div
-      className={cn(
-        'px-5 py-5',
-        borderTop && 'border-t border-neutral-200',
-      )}
-    >
-      <p className="font-bold mb-2" style={{ fontSize: '14px', color: NAVY }}>
-        {label}
-      </p>
-      <p className="font-display leading-none mb-2" style={{ fontSize: 'clamp(28px, 5vw, 36px)', color: '#007AC8' }}>
-        {value}
-      </p>
-      <p style={{ fontSize: '13px', color: '#666666', lineHeight: '1.55' }}>
-        {description}
-      </p>
     </div>
   )
 }

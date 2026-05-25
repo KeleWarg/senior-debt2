@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { ClosingSection } from '@/components/calculator/intro/ClosingSection'
-import { ComparisonTable } from '@/components/calculator/intro/ComparisonTable'
+import { ComparisonTimeline } from '@/components/calculator/intro/ComparisonTimeline'
 import { DebtRealityAnchor } from '@/components/calculator/intro/DebtRealityAnchor'
 import { FAQ } from '@/components/calculator/intro/FAQ'
 import { PressMentions } from '@/components/calculator/intro/PressMentions'
@@ -11,7 +11,7 @@ import { Testimonials } from '@/components/calculator/intro/Testimonials'
 import { TrustBar } from '@/components/calculator/intro/TrustBar'
 import { ValueBanner } from '@/components/calculator/intro/ValueBanner'
 import { Button, ScrollReveal } from '@/components/ui'
-import { COMPARISON_STATIC, MOTIVATION_OPTIONS } from '@/components/calculator/shared/constants'
+import { MOTIVATION_OPTIONS } from '@/components/calculator/shared/constants'
 import { trackEvent } from '@/components/calculator/shared/tracking'
 import type { MotivationDriver } from '@/types/calculator'
 
@@ -42,13 +42,12 @@ export function CalculatorLanding({
         <div className="flex flex-col lg:flex-row lg:items-center lg:gap-14">
 
           {/* Hero — headline + options + trust */}
-          <div className="w-full max-w-[720px] mx-auto flex flex-col items-center text-center overflow-hidden">
+          <div className="w-full max-w-[820px] mx-auto flex flex-col items-center text-center overflow-hidden">
             <h1
               className="animate-fade-in-up font-display text-display sm:text-display-md lg:text-display-lg mb-2"
               style={{ animationDelay: '200ms', color: '#1B2A4A' }}
             >
-              Fast-Track Your Way Out of Debt,{' '}
-              <br className="hidden sm:block" />
+              Cut Business Debt Off Your Personal Credit,{' '}
               <span className="whitespace-nowrap" style={{ color: '#0C7663' }}>For Up to 50% Less Than You Owe</span>
             </h1>
 
@@ -56,9 +55,8 @@ export function CalculatorLanding({
               className="animate-fade-in-up leading-relaxed mb-3 max-w-[480px]"
               style={{ animationDelay: '250ms', fontSize: '15px', color: '#666666' }}
             >
-              With a structured debt relief plan, Americans with $20K+ in debt could become completely debt-free by{' '}
-              <span className="font-bold" style={{ color: '#0C7663' }}>2028</span> instead of{' '}
-              <span className="font-bold" style={{ color: '#EB4015' }}>2049</span> by making only minimum payments.
+              Resolve it in <span className="font-bold" style={{ color: '#0C7663' }}>3 years</span> instead of{' '}
+              <span className="font-bold" style={{ color: '#EB4015' }}>15</span> and stop carrying business risk on your personal credit.
             </p>
 
             <div
@@ -100,23 +98,23 @@ export function CalculatorLanding({
         </div>
       </div>
 
-      {/* ── Below-fold: headline + stats + comparison table ── */}
+      {/* ── Below-fold: timeline comparison ── */}
       <DebtRealityAnchor onCta={onCta}>
-        <ComparisonTable
-          withoutRelief={{
-            totalPaid: COMPARISON_STATIC.withoutRelief.totalPaid,
-            debtFreeYear: COMPARISON_STATIC.withoutRelief.debtFreeYear,
-            monthlyPayment: COMPARISON_STATIC.withoutRelief.monthlyPayment,
-            paymentYears: COMPARISON_STATIC.withoutRelief.paymentYears,
+        <ComparisonTimeline
+          currentPayment={{
+            years: 15,
+            startYear: 2026,
+            endYear: 2041,
+            totalPaid: 87650,
           }}
-          withRelief={{
-            totalCost: COMPARISON_STATIC.withRelief.totalPaid,
-            debtFreeYear: COMPARISON_STATIC.withRelief.debtFreeYear,
-            monthlyPayment: COMPARISON_STATIC.withRelief.monthlyPayment,
-            programYears: COMPARISON_STATIC.withRelief.programYears,
+          withProgram={{
+            years: 3,
+            startYear: 2026,
+            endYear: 2029,
+            totalPaid: 22500,
           }}
-          totalSaved={COMPARISON_STATIC.withRelief.totalSaved}
-          disclaimer={`Based on $${COMPARISON_STATIC.debtAmount.toLocaleString()} in credit card debt at ${COMPARISON_STATIC.aprPercent}% APR, starting ${COMPARISON_STATIC.startYear}. Relief estimate assumes industry-average program terms.`}
+          disclaimer="Based on $45,000 in personal unsecured debt at 22% APR, starting 2026. Relief estimate assumes industry-average program terms. Individual results vary; not a guarantee of savings or timeline."
+          onCta={onCta}
         />
       </DebtRealityAnchor>
 

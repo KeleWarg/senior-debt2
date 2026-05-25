@@ -3,24 +3,22 @@
 import * as React from 'react'
 import { RadioGroup, RadioCard } from '@/components/ui'
 
-interface PaymentSliderProps {
+interface RevenueSliderProps {
   onSubmit: (value: number) => void
 }
 
-const DEBT_RANGES = [
-  { id: '15k-20k', label: '$15k – $20k', mid: 17500 },
-  { id: '20k-35k', label: '$20k – $35k', mid: 27500 },
-  { id: '35k-50k', label: '$35k – $50k', mid: 42500 },
-  { id: '50k-75k', label: '$50k – $75k', mid: 62500 },
-  { id: '75k-100k', label: '$75k – $100k', mid: 87500 },
-  { id: '100k+', label: '$100k+', mid: 125000 },
+const REVENUE_RANGES = [
+  { id: 'under-2k', label: 'Under $2,000/mo', mid: 1000 },
+  { id: '2k-5k', label: '$2,000 – $5,000/mo', mid: 3500 },
+  { id: '5k-10k', label: '$5,000 – $10,000/mo', mid: 7500 },
+  { id: '10k-25k', label: '$10,000 – $25,000/mo', mid: 17500 },
+  { id: '25k-50k', label: '$25,000 – $50,000/mo', mid: 37500 },
+  { id: '50k+', label: '$50,000+/mo', mid: 75000 },
 ]
 
-export function PaymentSlider({
-  onSubmit,
-}: PaymentSliderProps) {
+export function RevenueSlider({ onSubmit }: RevenueSliderProps) {
   const handleSelect = (id: string) => {
-    const range = DEBT_RANGES.find((r) => r.id === id)
+    const range = REVENUE_RANGES.find((r) => r.id === id)
     if (!range) return
     setTimeout(() => onSubmit(range.mid), 300)
   }
@@ -32,23 +30,23 @@ export function PaymentSlider({
           className="animate-fade-in-up text-xs font-medium uppercase tracking-wider text-neutral-400 mb-3"
           style={{ animationDelay: '400ms' }}
         >
-          Step 2 of 3
+          Step 3 of 3
         </p>
 
         <h1
           className="animate-fade-in-up font-display text-headline-lg sm:text-display lg:text-display-md mb-3"
           style={{ animationDelay: '400ms', color: '#1B2A4A' }}
         >
-          How much do you owe across all your{' '}
-          <span style={{ color: '#007AC8' }}>cards and loans?</span>
+          What&apos;s your business{' '}
+          <span style={{ color: '#007AC8' }}>bringing in right now?</span>
         </h1>
 
         <p
           className="animate-fade-in-up leading-relaxed mb-6"
           style={{ animationDelay: '500ms', fontSize: '15px', color: '#666666' }}
         >
-          Credit cards, personal loans, lines of credit, business cards in your
-          personal name. Don&apos;t include auto loans, mortgages, or medical bills.
+          Approximate monthly revenue. If your business is closed or paused,
+          use your current personal income from all sources.
         </p>
 
         <div
@@ -61,7 +59,7 @@ export function PaymentSlider({
             onValueChange={handleSelect}
             className="grid grid-cols-2 gap-3"
           >
-            {DEBT_RANGES.map((range) => (
+            {REVENUE_RANGES.map((range) => (
               <RadioCard key={range.id} value={range.id}>
                 {range.label}
               </RadioCard>
@@ -82,8 +80,9 @@ export function PaymentSlider({
             Did You Know?
           </p>
           <p style={{ fontSize: '14px', color: '#1B2A4A', lineHeight: '1.6' }}>
-            Most small business owners we work with carry between $35k and $75k in personal unsecured
-            debt and 40% of small firms hold business debt up to $100k, much of it sitting on personal credit.
+            Cash flow is the #1 challenge for small business owners and nearly half rely on the
+            owner&apos;s personal funds to bridge the gap when revenue dips. Lower revenue often
+            qualifies you for stronger relief options, not weaker ones.
           </p>
           <p className="mt-2" style={{ fontSize: '11px', color: '#8899AA', lineHeight: '1.4' }}>
             Source: Federal Reserve Small Business Credit Survey
@@ -94,4 +93,4 @@ export function PaymentSlider({
   )
 }
 
-export default PaymentSlider
+export default RevenueSlider
