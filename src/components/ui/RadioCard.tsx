@@ -46,7 +46,7 @@ const RadioCard = React.forwardRef<
   <RadioGroupPrimitive.Item
     ref={ref}
     className={cn(
-      'group flex items-center gap-3 w-full bg-white border border-neutral-200 rounded-[8px]',
+      'group flex items-start gap-3 w-full bg-white border border-neutral-200 rounded-[8px]',
       'p-4 cursor-pointer transition-all duration-200',
       'hover:border-primary-700',
       'data-[state=checked]:border-primary-700 data-[state=checked]:bg-primary-300',
@@ -56,9 +56,9 @@ const RadioCard = React.forwardRef<
     )}
     {...props}
   >
-    <div className="flex items-center gap-2">
+    <div className="flex items-start gap-2">
       <div className={cn(
-        'flex items-center justify-center w-5 h-5 rounded-full border-2 flex-shrink-0',
+        'flex items-center justify-center w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5',
         'border-neutral-200 transition-colors duration-200',
         'group-data-[state=checked]:border-primary-700 group-data-[state=checked]:bg-primary-700'
       )}>
@@ -68,7 +68,7 @@ const RadioCard = React.forwardRef<
         )} />
       </div>
 
-      <div className="min-w-0">
+      <div className="min-w-0 text-left">
         <div className="text-body font-medium text-neutral-800">
           {children}
         </div>

@@ -1,6 +1,5 @@
 import type { MotivationDriver } from '@/types/calculator'
 
-/** National average APR — confirm with stakeholders */
 export const DEFAULT_APR = 22.76
 
 export const DEBT_STATS = {
@@ -12,7 +11,6 @@ export const DEBT_STATS = {
   source: 'Federal Reserve, 2025',
 } as const
 
-/** Static landing comparison — placeholder assumptions (confirm with compliance) */
 export const COMPARISON_STATIC = {
   debtAmount: 25000,
   aprPercent: 22,
@@ -38,7 +36,6 @@ export const SUCCESS_DATA = {
   percentage: 85,
   avgReduction: 14500,
   source: 'Program data, 2023–2025',
-  /** Flip when real partner data is approved */
   show: false,
 } as const
 
@@ -46,42 +43,37 @@ export const MOTIVATION_DEFAULTS: Record<
   MotivationDriver,
   { debtAmount: number; monthlyPayment: number }
 > = {
-  debt_free_fast: { debtAmount: 20000, monthlyPayment: 450 },
-  pay_less_interest: { debtAmount: 20000, monthlyPayment: 400 },
-  lower_monthly_payments: { debtAmount: 25000, monthlyPayment: 250 },
-  debt_free_date: { debtAmount: 15000, monthlyPayment: 350 },
-  all_of_the_above: { debtAmount: 20000, monthlyPayment: 350 },
-  stop_credit_damage: { debtAmount: 20000, monthlyPayment: 400 },
-  resolve_faster: { debtAmount: 20000, monthlyPayment: 400 },
-  keep_cash_flow: { debtAmount: 25000, monthlyPayment: 350 },
-  separate_liability: { debtAmount: 20000, monthlyPayment: 350 },
+  stop_shrinking_income: { debtAmount: 25000, monthlyPayment: 350 },
+  pay_off_faster: { debtAmount: 20000, monthlyPayment: 400 },
+  protect_social_security: { debtAmount: 20000, monthlyPayment: 300 },
+  one_manageable_payment: { debtAmount: 25000, monthlyPayment: 250 },
 }
 
 export const FAQ_ITEMS = [
   {
-    id: 'nursing_license',
-    question: 'Will this affect my nursing license or background check?',
-    answer: 'Debt relief doesn\u2019t appear on nursing license records or most healthcare employer background checks. Credit checks may show enrolled accounts during the program, but the relief process itself isn\u2019t a regulatory issue for healthcare licensing.',
+    id: 'monthly_payment',
+    question: 'How much will I have to pay each month?',
+    answer: 'Debt relief programs typically lower your total amount owed by 40–60% by negotiating with creditors who prefer a smaller payment over nothing. Your debt is consolidated into one manageable monthly payment — most people save hundreds per month compared to minimums.',
   },
   {
-    id: 'continuing_education',
-    question: 'What if my debt is from continuing education or certifications?',
-    answer: 'Personal unsecured debt qualifies regardless of what it was used for \u2014 including continuing education, certification fees, or licensing prep. The exception is federal student loans, which aren\u2019t covered by these programs.',
+    id: 'credit_score',
+    question: 'Will this destroy my credit score?',
+    answer: 'Checking eligibility has zero impact. Enrolling does temporarily affect your score, but most people already have damaged credit from late payments. Scores typically begin recovering within 12–18 months of completing the program.',
   },
   {
-    id: 'overtime',
-    question: 'Can I keep working overtime while in the program?',
-    answer: 'Yes. The program works in the background \u2014 you continue your normal schedule. Many enrollees actually reduce their overtime once the monthly burden eases.',
+    id: 'fees',
+    question: 'Is there a fee to check?',
+    answer: 'No upfront fees, ever. Programs only charge after a reduction has been reached. This is standard industry practice, required by FTC rules.',
   },
   {
-    id: 'employer',
-    question: 'Will my hospital or employer find out?',
-    answer: 'No. The program is private \u2014 no court filings, no public records, no employer notifications. It does not appear on standard employment verifications.',
+    id: 'minimum_debt',
+    question: 'What\'s the minimum debt to qualify?',
+    answer: 'Most programs require at least $10,000 in unsecured debt. Credit cards, medical bills, and personal loans typically qualify. Mortgages, auto loans, and public student loans generally do not.',
   },
   {
     id: 'bankruptcy',
     question: 'How is this different from bankruptcy?',
-    answer: 'Debt settlement is a private negotiation \u2014 no court, no public record, typically completed in 24\u201348 months. Bankruptcy is a legal proceeding that appears on your public record for 7\u201310 years and can affect licensing in some healthcare specialties. Many healthcare workers use settlement specifically to avoid that risk.',
+    answer: 'Debt relief is a private negotiation — no court, no public record. Most people complete the process in 24–48 months. Bankruptcy appears on your record for 7–10 years and affects significantly more aspects of your financial life.',
   },
 ] as const
 
@@ -96,10 +88,9 @@ export const CLOSING_TRUST = {
   description: "Your data is encrypted, confidential, and never shared without your explicit permission. Powered by Forbes Advisor's vetted partner network.",
 } as const
 
-/** Landing radio labels (same order as MotivationDriver keys above) */
 export const MOTIVATION_OPTIONS: { id: MotivationDriver; label: string }[] = [
-  { id: 'resolve_faster', label: 'Resolving it in years, not decades' },
-  { id: 'pay_less_interest', label: 'Stopping interest from eating my paycheck' },
-  { id: 'lower_monthly_payments', label: 'Lowering the monthly burden' },
-  { id: 'debt_free_fast', label: 'Getting back the hours I\u2019ve been losing' },
+  { id: 'stop_shrinking_income', label: 'Stopping debt from shrinking my monthly income' },
+  { id: 'pay_off_faster', label: 'Paying it off in years, not decades' },
+  { id: 'protect_social_security', label: 'Keeping my Social Security protected' },
+  { id: 'one_manageable_payment', label: 'Getting one manageable payment I can budget around' },
 ]

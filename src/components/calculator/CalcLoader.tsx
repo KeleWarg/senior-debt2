@@ -10,9 +10,10 @@ interface CalcLoaderProps {
 }
 
 const STEPS = [
-  'Building your Shift-to-Relief Calculator...',
-  'Matching you with healthcare-friendly programs...',
-  'Calculating your savings projection...',
+  'Analyzing your payment structure...',
+  'Calculating interest accumulation...',
+  'Projecting your debt-free timeline...',
+  'Building your personalized report...',
 ]
 
 export function CalcLoader({ onComplete }: CalcLoaderProps) {
@@ -114,7 +115,6 @@ export function CalcLoader({ onComplete }: CalcLoaderProps) {
               {progress}% complete
             </p>
           </div>
-
 
           <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 mt-8 text-neutral-500">
             <div className="flex items-center gap-2">

@@ -27,8 +27,8 @@ const schnyderS = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'Small Business Debt Relief Calculator - Forbes Advisor',
-  description: 'See how much you could save on business-origin debt. Free eligibility check for small business owners — no signup required.',
+  title: 'Senior Debt Relief Calculator | Forbes Advisor',
+  description: 'Cut your debt in half without touching your Social Security or pension. Free eligibility check for seniors on fixed income — no signup required.',
 }
 
 export default function RootLayout({

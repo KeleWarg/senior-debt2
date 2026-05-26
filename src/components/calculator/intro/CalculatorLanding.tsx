@@ -37,26 +37,25 @@ export function CalculatorLanding({
     <div className="w-full flex flex-col">
       <ValueBanner />
 
-      {/* ── Hero fold — two-column on lg ── */}
+      {/* Hero fold */}
       <div className="w-full max-w-[1120px] mx-auto px-4 sm:px-6 lg:px-10 pt-8 sm:pt-12 lg:pt-16 pb-8 sm:pb-12 lg:pb-16">
         <div className="flex flex-col lg:flex-row lg:items-center lg:gap-14">
 
-          {/* Hero — headline + options + trust */}
           <div className="w-full max-w-[820px] mx-auto flex flex-col items-center text-center overflow-hidden">
             <h1
               className="animate-fade-in-up font-display text-display sm:text-display-md lg:text-display-lg mb-2"
               style={{ animationDelay: '200ms', color: '#1B2A4A' }}
             >
-              Stop Trading Shifts For{' '}
-              <span style={{ color: '#0C7663' }}>Interest Payments.</span>
+              Cut your debt in half{' '}
+              <span style={{ color: '#0C7663' }}>without touching your Social Security or pension.</span>
             </h1>
 
             <p
-              className="animate-fade-in-up leading-relaxed mb-3 max-w-[480px]"
+              className="animate-fade-in-up leading-relaxed mb-3 max-w-[520px]"
               style={{ animationDelay: '250ms', fontSize: '15px', color: '#666666' }}
             >
               Resolve it in <span className="font-bold" style={{ color: '#0C7663' }}>3 years</span> instead of{' '}
-              <span className="font-bold" style={{ color: '#EB4015' }}>15</span> — and stop working overtime to keep up with interest.
+              <span className="font-bold" style={{ color: '#EB4015' }}>15</span> and stop carrying debt risk on your personal credit.
             </p>
 
             <div
@@ -98,21 +97,21 @@ export function CalculatorLanding({
         </div>
       </div>
 
-      {/* ── Below-fold: timeline comparison ── */}
+      {/* Below-fold: timeline comparison */}
       <DebtRealityAnchor onCta={onCta}>
         <ComparisonTimeline
-          businessOriginDebt={45000}
+          businessOriginDebt={25000}
           currentPayment={{
             years: 15,
             endYear: 2041,
-            totalPaid: 87650,
+            totalPaid: 48700,
           }}
           withProgram={{
             years: 3,
             endYear: 2029,
-            totalPaid: 22500,
+            totalPaid: 12500,
           }}
-          disclaimer="Based on $45,000 in unsecured debt at 22% APR, starting 2026. Relief estimate uses industry-average program terms. Individual results vary; not a guarantee of savings or timeline."
+          disclaimer="Based on $25,000 in unsecured debt at 22% APR, starting 2026. Relief estimate uses industry-average program terms. Individual results vary; not a guarantee of savings or timeline."
           onCta={onCta}
         />
       </DebtRealityAnchor>

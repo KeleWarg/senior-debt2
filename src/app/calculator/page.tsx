@@ -3,10 +3,11 @@
 import * as React from 'react'
 import {
   CalcLoader,
-  RoleStep,
+  IncomeSourceStep,
   TotalDebtStep,
-  ShiftSituationStep,
+  PaymentSituationStep,
   RevealScreen,
+  LeadCaptureStep,
 } from '@/components/calculator'
 import { CalculatorLanding } from '@/components/calculator/intro/CalculatorLanding'
 import { CalcProgressBar } from '@/components/calculator/CalcProgressBar'
@@ -16,18 +17,19 @@ import type {
   CalcStep,
   CalcFunnelData,
   MotivationDriver,
-  HealthcareRole,
+  IncomeSource,
   TotalDebtRange,
-  ShiftSituation,
+  PaymentSituation,
 } from '@/types/calculator'
 
 const STEP_ORDER: CalcStep[] = [
   'intro',
-  'role',
+  'incomeSource',
   'totalDebt',
-  'shiftSituation',
+  'paymentSituation',
   'loader',
   'reveal',
+  'leadCapture',
 ]
 
 const FULL_SCREEN_STEPS: CalcStep[] = ['intro', 'loader']
@@ -35,7 +37,7 @@ const FULL_SCREEN_STEPS: CalcStep[] = ['intro', 'loader']
 export default function CalculatorPage() {
   const [step, setStep] = React.useState<CalcStep>('intro')
   const [data, setData] = React.useState<CalcFunnelData>({
-    debtAmount: 15000,
+    debtAmount: 25000,
     interestRate: DEFAULT_APR,
     monthlyPayment: 350,
     motivationDriver: null,
@@ -64,7 +66,7 @@ export default function CalculatorPage() {
   }, [])
 
   const isFullScreen = FULL_SCREEN_STEPS.includes(step)
-  const showProgress = !isFullScreen
+  const showProgress = !isFullScreen && step !== 'reveal' && step !== 'leadCapture'
   const showBack = step !== 'intro' && step !== 'loader'
 
   if (step === 'intro') {
@@ -84,7 +86,7 @@ export default function CalculatorPage() {
             }}
             onCta={() => {
               window.scrollTo({ top: 0, behavior: 'smooth' })
-              goTo('role')
+              goTo('incomeSource')
             }}
           />
         </div>
@@ -98,11 +100,11 @@ export default function CalculatorPage() {
 
   const renderStep = () => {
     switch (step) {
-      case 'role':
+      case 'incomeSource':
         return (
-          <RoleStep
-            onSubmit={(role: HealthcareRole) => {
-              update({ role })
+          <IncomeSourceStep
+            onSubmit={(sources: IncomeSource[]) => {
+              update({ incomeSources: sources, incomeSource: sources[0] })
               goTo('totalDebt')
             }}
           />
@@ -112,15 +114,15 @@ export default function CalculatorPage() {
           <TotalDebtStep
             onSubmit={(range: TotalDebtRange, mid: number) => {
               update({ totalDebt: range, totalDebtMid: mid, debtAmount: mid })
-              goTo('shiftSituation')
+              goTo('paymentSituation')
             }}
           />
         )
-      case 'shiftSituation':
+      case 'paymentSituation':
         return (
-          <ShiftSituationStep
-            onSubmit={(situation: ShiftSituation) => {
-              update({ shiftSituation: situation })
+          <PaymentSituationStep
+            onSubmit={(situation: PaymentSituation) => {
+              update({ paymentSituation: situation })
               goTo('loader')
             }}
           />
@@ -129,6 +131,16 @@ export default function CalculatorPage() {
         return (
           <RevealScreen
             debtAmount={data.debtAmount}
+            onContinue={() => goTo('leadCapture')}
+          />
+        )
+      case 'leadCapture':
+        return (
+          <LeadCaptureStep
+            debtAmount={data.debtAmount}
+            onSubmit={(pii) => {
+              update(pii)
+            }}
           />
         )
       default:

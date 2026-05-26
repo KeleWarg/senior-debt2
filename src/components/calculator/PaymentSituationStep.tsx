@@ -2,24 +2,24 @@
 
 import * as React from 'react'
 import { RadioGroup, RadioCard } from '@/components/ui'
-import type { TotalDebtRange } from '@/types/calculator'
+import type { PaymentSituation } from '@/types/calculator'
 
-interface TotalDebtStepProps {
-  onSubmit: (range: TotalDebtRange, mid: number) => void
+interface PaymentSituationStepProps {
+  onSubmit: (situation: PaymentSituation) => void
 }
 
-const DEBT_RANGES: { id: TotalDebtRange; label: string; mid: number }[] = [
-  { id: 'under_10k', label: 'Less than $10,000', mid: 7500 },
-  { id: '10k-25k', label: '$10,000 – $24,999', mid: 17500 },
-  { id: '25k-50k', label: '$25,000 – $49,999', mid: 37500 },
-  { id: '50k+', label: '$50,000 or more', mid: 62500 },
+const SITUATION_OPTIONS: { id: PaymentSituation; label: string; icon: string }[] = [
+  { id: 'keeping_up', label: 'Keeping up, but it\'s a real stretch each month', icon: '✓' },
+  { id: 'struggling', label: 'Struggling — I\'ve had to skip payments or dip into savings', icon: '!' },
+  { id: 'behind', label: 'Behind — missed several payments, collectors are calling', icon: '!' },
+  { id: 'stopped', label: 'I\'ve stopped paying — the debt feels overwhelming', icon: '✕' },
 ]
 
-export function TotalDebtStep({ onSubmit }: TotalDebtStepProps) {
+export function PaymentSituationStep({ onSubmit }: PaymentSituationStepProps) {
   const handleSelect = (id: string) => {
-    const range = DEBT_RANGES.find((r) => r.id === id)
-    if (!range) return
-    setTimeout(() => onSubmit(range.id as TotalDebtRange, range.mid), 300)
+    const option = SITUATION_OPTIONS.find((o) => o.id === id)
+    if (!option) return
+    setTimeout(() => onSubmit(option.id), 300)
   }
 
   return (
@@ -29,22 +29,22 @@ export function TotalDebtStep({ onSubmit }: TotalDebtStepProps) {
           className="animate-fade-in-up text-xs font-medium uppercase tracking-wider text-neutral-400 mb-3"
           style={{ animationDelay: '400ms' }}
         >
-          Question 2 of 3
+          Question 3 of 3
         </p>
 
         <h1
           className="animate-fade-in-up font-display text-headline-lg sm:text-display lg:text-display-md mb-3"
           style={{ animationDelay: '400ms', color: '#1B2A4A' }}
         >
-          What is your total unsecured debt —{' '}
-          <span style={{ color: '#007AC8' }}>credit cards and personal loans?</span>
+          How would you describe your{' '}
+          <span style={{ color: '#007AC8' }}>current debt payments?</span>
         </h1>
 
         <p
           className="animate-fade-in-up leading-relaxed mb-6"
           style={{ animationDelay: '500ms', fontSize: '15px', color: '#666666' }}
         >
-          Don&apos;t include your mortgage or student loans. An estimate is fine.
+          Be honest — this helps us find the right program for your situation.
         </p>
 
         <div
@@ -57,9 +57,9 @@ export function TotalDebtStep({ onSubmit }: TotalDebtStepProps) {
             onValueChange={handleSelect}
             className="flex flex-col gap-3"
           >
-            {DEBT_RANGES.map((range) => (
-              <RadioCard key={range.id} value={range.id}>
-                {range.label}
+            {SITUATION_OPTIONS.map((option) => (
+              <RadioCard key={option.id} value={option.id}>
+                {option.label}
               </RadioCard>
             ))}
           </RadioGroup>
@@ -69,4 +69,4 @@ export function TotalDebtStep({ onSubmit }: TotalDebtStepProps) {
   )
 }
 
-export default TotalDebtStep
+export default PaymentSituationStep

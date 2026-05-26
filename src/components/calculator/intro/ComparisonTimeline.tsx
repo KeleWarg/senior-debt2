@@ -127,8 +127,7 @@ export function ComparisonTimeline({
             color: '#666666',
           }}
         >
-          Both paths carry the same debt. The difference is whether you keep
-          paying it off in overtime.
+          Both paths start with the same debt. The difference is what happens to it.
         </p>
       </div>
 
@@ -285,7 +284,7 @@ export function ComparisonTimeline({
                 color: GREEN,
               }}
             >
-              With Healthcare-Worker-Tier Relief
+              With Debt Relief
             </p>
 
             <div className="flex flex-col gap-2">
@@ -302,7 +301,7 @@ export function ComparisonTimeline({
               </div>
               <div className="flex justify-between items-baseline gap-2">
                 <span style={{ fontSize: '14px', fontWeight: 400, color: NAVY }}>
-                  Settlement reduction
+                  Debt reduction
                 </span>
                 <span
                   className="font-display whitespace-nowrap"
@@ -354,6 +353,12 @@ export function ComparisonTimeline({
         }}
       >
         <p
+          className="mb-2"
+          style={{ fontSize: '13px', color: MUTED, fontWeight: 500 }}
+        >
+          Your potential savings
+        </p>
+        <p
           className="font-display"
           style={{
             fontSize: 'clamp(24px, 4vw, 28px)',
@@ -362,15 +367,21 @@ export function ComparisonTimeline({
             color: NAVY,
           }}
         >
-          You keep{' '}
           <span style={{ color: GREEN }}>
             {formatCurrency(youKeepAmount)}
           </span>{' '}
-          and{' '}
-          <span style={{ color: GREEN }}>
-            {yearsSaved} years
-          </span>
-          .
+          kept in your pocket
+        </p>
+        <p
+          className="font-display mt-1"
+          style={{
+            fontSize: 'clamp(18px, 3vw, 22px)',
+            fontWeight: 500,
+            lineHeight: 1.3,
+            color: GREEN,
+          }}
+        >
+          {yearsSaved} years of debt eliminated
         </p>
       </div>
 
@@ -384,8 +395,11 @@ export function ComparisonTimeline({
           }}
         >
           <Button fullWidth showTrailingIcon onClick={onCta}>
-            Calculate my Shift-to-Relief plan
+            Calculate my debt-free date
           </Button>
+          <p className="text-center mt-3" style={{ fontSize: '13px', color: '#0C7663', fontWeight: 500 }}>
+            Your Social Security and pension are not at risk.
+          </p>
         </div>
       )}
 

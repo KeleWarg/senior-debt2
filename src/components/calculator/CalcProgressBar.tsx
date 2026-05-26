@@ -6,11 +6,12 @@ import type { CalcStep } from '@/types/calculator'
 
 const STEP_PROGRESS: Partial<Record<CalcStep, number>> = {
   intro: 0,
-  role: 33,
+  incomeSource: 33,
   totalDebt: 66,
-  shiftSituation: 90,
+  paymentSituation: 90,
   loader: 95,
   reveal: 100,
+  leadCapture: 100,
 }
 
 interface CalcProgressBarProps {

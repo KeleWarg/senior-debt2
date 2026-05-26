@@ -62,15 +62,7 @@ export function ClosingSection({ onCta }: ClosingSectionProps) {
                 {CLOSING_TRUST.description}
               </p>
 
-              {/* Trust badges */}
               <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-                <span className="inline-flex items-baseline gap-0.5">
-                  <span className="font-display" style={{ fontSize: '15px', fontWeight: 600, color: '#1B2A4A' }}>Forbes</span>
-                  <span style={{ fontSize: '12px', color: '#6B7280', letterSpacing: '0.02em' }}>&nbsp;ADVISOR</span>
-                </span>
-
-                <span className="hidden sm:block" style={{ width: '0.5px', height: '20px', backgroundColor: '#E5E7EB' }} />
-
                 <span className="inline-flex items-center gap-1">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                     <path d="M7 0L8.9 4.5L14 5.2L10.5 8.5L11.3 14L7 11.5L2.7 14L3.5 8.5L0 5.2L5.1 4.5L7 0Z" fill="#00B67A" />
@@ -92,7 +84,7 @@ export function ClosingSection({ onCta }: ClosingSectionProps) {
               className="font-display mb-5"
               style={{ fontSize: '20px', fontWeight: 600, color: '#1B2A4A' }}
             >
-              Ready to see your Shift-to-Relief plan?
+              Ready to see your debt-free date?
             </h3>
 
             <Button
@@ -101,11 +93,15 @@ export function ClosingSection({ onCta }: ClosingSectionProps) {
               onClick={handleClick}
               className="max-w-[420px] mx-auto"
             >
-              Calculate my Shift-to-Relief plan
+              Calculate your debt-free date
             </Button>
 
             <p className="mt-3" style={{ fontSize: '13px', color: '#9CA3AF' }}>
-              Takes 30 seconds · No signup required · Free ($50–$100 value)
+              Takes 30 seconds · No signup required · Free
+            </p>
+
+            <p className="mt-2" style={{ fontSize: '13px', color: '#0C7663', fontWeight: 500 }}>
+              Your Social Security and pension are not at risk.
             </p>
           </div>
         </div>

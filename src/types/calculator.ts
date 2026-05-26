@@ -1,120 +1,68 @@
 /**
- * Types for Calculator Funnel (Path B) and Advertorial Funnel (Path A)
+ * Types for Senior Debt Relief Calculator Funnel
  */
-
-// ── Calculator Funnel State ──
 
 export type CalcStep =
   | 'intro'
-  | 'role'
+  | 'incomeSource'
   | 'totalDebt'
-  | 'shiftSituation'
+  | 'paymentSituation'
   | 'loader'
   | 'reveal'
+  | 'leadCapture'
 
-export type HealthcareRole =
-  | 'rn'
-  | 'lpn_lvn'
-  | 'cna_aide_tech'
-  | 'therapist_allied'
-  | 'physician_np_pa'
-  | 'other'
+export type IncomeSource =
+  | 'social_security'
+  | 'ssdi_ssi'
+  | 'pension_retirement'
+  | 'va_benefits'
 
 export type TotalDebtRange =
-  | '15k-20k'
-  | '20k-35k'
-  | '35k-50k'
-  | '50k-75k'
-  | '75k-100k'
-  | '100k+'
+  | 'under_10k'
+  | '10k-25k'
+  | '25k-50k'
+  | '50k+'
 
-export type ShiftSituation =
-  | 'full_time_no_extra'
-  | 'occasional_overtime'
-  | 'regular_overtime'
-  | 'multiple_jobs'
+export type PaymentSituation =
+  | 'keeping_up'
+  | 'struggling'
+  | 'behind'
+  | 'stopped'
 
-/** v3 landing motivation — maps to calculator defaults */
 export type MotivationDriver =
-  | 'debt_free_fast'
-  | 'pay_less_interest'
-  | 'lower_monthly_payments'
-  | 'debt_free_date'
-  | 'all_of_the_above'
-  | 'stop_credit_damage'
-  | 'resolve_faster'
-  | 'keep_cash_flow'
-  | 'separate_liability'
+  | 'stop_shrinking_income'
+  | 'pay_off_faster'
+  | 'protect_social_security'
+  | 'one_manageable_payment'
 
 export interface CalcFunnelData {
   debtAmount: number
-  /** Fraction of total debt that is business-related (0–1) */
-  businessDebtShare?: number
   interestRate: number
   monthlyPayment: number
-  monthlyRevenue?: number
   motivationDriver?: MotivationDriver | null
-  role?: HealthcareRole
+  incomeSource?: IncomeSource
+  incomeSources?: IncomeSource[]
   totalDebt?: TotalDebtRange
   totalDebtMid?: number
-  shiftSituation?: ShiftSituation
+  paymentSituation?: PaymentSituation
   firstName?: string
   lastName?: string
   email?: string
   phone?: string
 }
-
-// ── Advertorial Funnel State ──
-
-export type AdvertorialStep =
-  | 'article'
-  | `bridge-${number}`
-  | 'debtType'
-  | 'paymentStatus'
-  | 'state'
-  | 'loading'
-  | 'results'
-  | 'pii'
-
-export interface AdvertorialFunnelData {
-  segment: string
-  role?: string
-  debtAmount?: string
-  hardshipStatus?: string
-  debtType?: string
-  paymentStatus?: string
-  state?: string
-  firstName?: string
-  lastName?: string
-  email?: string
-  phone?: string
-}
-
-// ── Shared Lead Model ──
 
 export interface Lead {
   id?: string
-  funnel: 'calculator' | 'advertorial'
-  segment?: string
-
+  funnel: 'calculator'
   debtAmount: number | string
-  debtType: string
-  hardshipStatus: string
-  paymentStatus?: string
-  state?: string
-
+  paymentSituation?: string
+  incomeSource?: string
   interestRate?: number
   monthlyPayment?: number
-  currentDebtFreeYear?: number
-  reliefDebtFreeYear?: number
-
-  role?: string
-
   firstName: string
   lastName: string
   email: string
   phone: string
-
   createdAt?: Date
   utmSource?: string
   utmMedium?: string
@@ -123,63 +71,4 @@ export interface Lead {
   fbclid?: string
   deviceType?: string
   entryUrl?: string
-}
-
-// ── Advertorial Content Schema ──
-
-export interface SegmentContent {
-  meta: {
-    slug: string
-    brandName: string
-    brandColor: string
-    sponsoredLabel: string
-  }
-  article: {
-    headline: string
-    byline: {
-      name: string
-      initials: string
-      date: string
-      readTime: string
-    }
-    heroImageAlt: string
-    body: ContentBlock[]
-    testimonial: {
-      quote: string
-      attribution: string
-    }
-    closingParagraph: string
-    closingSubtext: string
-    ctaLabel: string
-  }
-  bridge: {
-    headerText: string
-    screens: BridgeScreen[]
-  }
-  confirmations: {
-    afterDebtType: string
-    afterPaymentStatus: string
-    afterState: string
-  }
-}
-
-export interface ContentBlock {
-  type: 'paragraph' | 'heading' | 'pullquote' | 'data-callout' | 'emphasis'
-  text?: string
-  heading?: string
-  quote?: string
-  stats?: { value: string; label: string; color?: 'green' | 'red' }[]
-  emphasis?: string
-}
-
-export interface BridgeScreen {
-  question: string
-  subtext: string
-  fieldKey: string
-  options: {
-    id: string
-    label: string
-    sub?: string
-  }[]
-  confirmation: string
 }

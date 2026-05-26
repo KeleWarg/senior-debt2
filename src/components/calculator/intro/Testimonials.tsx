@@ -9,95 +9,82 @@ interface TestimonialData {
   initials: string
   color: string
   rating: number
-  image?: string
-  partnerLogo?: string
-  partnerName?: string
-  date?: string
+  subtitle: string
 }
 
 const TESTIMONIALS: TestimonialData[] = [
   {
     quote:
-      'Americor paid all my medical bills that had went into collections with an affordable monthly payment and my credit score went up significantly.',
-    name: 'Crystal Jordan',
-    initials: 'CJ',
+      'This program reduced my balance by $14,000. My monthly payments went from $480 down to $180.',
+    name: 'Margaret T.',
+    initials: 'MT',
     color: '#2A6B5A',
     rating: 5,
-    image: '/testimonial-crystal-jordan.png',
-    partnerLogo: '/americor_logo.gif',
-    partnerName: 'Americor',
-    date: 'Sep 14, 2025',
+    subtitle: '71, retired school teacher · Verified client',
   },
   {
     quote:
-      'Having paid off a debt through Freedom Debt Relief is definitely a "relief." I appreciate the assistance from FDR as it has made a rather low spot in my life easier to handle and cope with.',
-    name: 'Rich Cupertino',
-    initials: 'RC',
-    color: '#D4A843',
-    rating: 5,
-    image: '/testimonial-rich-cupertino.png',
-    partnerLogo: '/freedom-debt-relief_logo.png',
-    partnerName: 'Freedom Debt Relief',
-    date: 'Jan 22, 2026',
-  },
-  {
-    quote:
-      'I have been very nervous to do this again since I was screwed by another company. My experience so far has been awesome here. They have been able to negotiate 2 of my 4 debts so far with good results. I would highly recommend them.',
-    name: 'Sue A Gleason',
-    initials: 'SG',
+      'They explained what was protected and what we could negotiate. I finally stopped choosing between groceries and the credit card bill.',
+    name: 'James R.',
+    initials: 'JR',
     color: '#4A6274',
     rating: 5,
-    image: '/testimonial-sue-gleason.png',
-    partnerLogo: '/National_logo.svg',
-    partnerName: 'National Debt Relief',
-    date: 'Feb 8, 2026',
+    subtitle: '68, retired postal worker · Verified client',
   },
   {
     quote:
-      'After speaking with Andrew at Pacific Debt Relief, I felt confident that I could manage such a program. He has been terrific in helping me navigate the process — shows a lot of care and concern for my situation.',
-    name: 'Bob Hirst',
-    initials: 'BH',
+      'One payment plan replaced three minimums we could barely afford. It feels manageable again on a fixed income.',
+    name: 'Dorothy & Frank M.',
+    initials: 'DM',
+    color: '#D4A843',
+    rating: 5,
+    subtitle: '74 & 76, retired · Verified clients',
+  },
+  {
+    quote:
+      'No one pressured me — they walked through options in plain English. Six months later I\'m on track to be done in under three years.',
+    name: 'Patricia L.',
+    initials: 'PL',
     color: '#7B5EA7',
     rating: 5,
-    image: '/testimonial-bob-hirst.png',
-    partnerLogo: '/pacific_logo.png',
-    partnerName: 'Pacific Debt',
-    date: 'Mar 19, 2026',
+    subtitle: '63, on disability benefits · Verified client',
+  },
+  {
+    quote:
+      'At 79 they made sure I understood my Social Security was not at risk. That peace of mind mattered as much as the lower payment.',
+    name: 'Harold W.',
+    initials: 'HW',
+    color: '#5A7A4A',
+    rating: 5,
+    subtitle: '79, widower on fixed income · Verified client',
+  },
+  {
+    quote:
+      'The plan cut what I owed and gave me one monthly amount I could budget around my pension.',
+    name: 'Robert K.',
+    initials: 'RK',
+    color: '#4A5D8A',
+    rating: 5,
+    subtitle: '72, retired engineer · Verified client',
   },
 ]
 
 function TestimonialCard({ testimonial, className }: { testimonial: TestimonialData; className?: string }) {
-  const { quote, name, initials, color, rating, image, partnerLogo, partnerName, date } = testimonial
+  const { quote, name, initials, color, rating, subtitle } = testimonial
   return (
     <div
       className={cn(
-        'rounded-xl bg-white border border-neutral-200 p-6 shadow-card relative pb-10',
+        'rounded-xl bg-white border border-neutral-200 p-6 shadow-card',
         className
       )}
     >
-      {partnerLogo && (
-        <img
-          src={partnerLogo}
-          alt={partnerName || ''}
-          className="absolute top-4 right-4 h-5 max-w-[80px] w-auto object-contain opacity-60"
-        />
-      )}
-
       <div className="flex items-center gap-3 mb-1">
-        {image ? (
-          <img
-            src={image}
-            alt={name}
-            className="h-10 w-10 rounded-full object-cover flex-shrink-0"
-          />
-        ) : (
-          <div
-            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
-            style={{ backgroundColor: color }}
-          >
-            {initials}
-          </div>
-        )}
+        <div
+          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
+          style={{ backgroundColor: color }}
+        >
+          {initials}
+        </div>
         <div>
           <span className="text-sm font-semibold" style={{ color: '#1B2A4A' }}>{name}</span>
           <div className="flex items-center gap-0.5 mt-0.5">
@@ -133,9 +120,9 @@ function TestimonialCard({ testimonial, className }: { testimonial: TestimonialD
         {quote}
       </p>
 
-      {date && (
-        <span className="absolute bottom-4 right-6 text-[10px] text-neutral-500">{date}</span>
-      )}
+      <p className="mt-3" style={{ fontSize: '12px', color: '#9CA3AF' }}>
+        {subtitle}
+      </p>
     </div>
   )
 }
@@ -154,7 +141,7 @@ export function Testimonials() {
           Real people, real relief
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
           {TESTIMONIALS.map((t) => (
             <TestimonialCard key={t.name} testimonial={t} />
           ))}
