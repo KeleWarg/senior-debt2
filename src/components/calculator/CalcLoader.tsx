@@ -10,10 +10,9 @@ interface CalcLoaderProps {
 }
 
 const STEPS = [
-  'Analyzing your payment structure...',
-  'Calculating interest accumulation...',
-  'Projecting your debt-free timeline...',
-  'Building your personalized report...',
+  'Building your Shift-to-Relief Calculator...',
+  'Matching you with healthcare-friendly programs...',
+  'Calculating your savings projection...',
 ]
 
 export function CalcLoader({ onComplete }: CalcLoaderProps) {

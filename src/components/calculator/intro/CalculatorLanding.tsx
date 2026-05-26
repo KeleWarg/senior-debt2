@@ -47,8 +47,8 @@ export function CalculatorLanding({
               className="animate-fade-in-up font-display text-display sm:text-display-md lg:text-display-lg mb-2"
               style={{ animationDelay: '200ms', color: '#1B2A4A' }}
             >
-              Cut Business Debt Off Your Personal Credit,{' '}
-              <span className="whitespace-nowrap" style={{ color: '#0C7663' }}>For Up to 50% Less Than You Owe</span>
+              Stop Trading Shifts For{' '}
+              <span style={{ color: '#0C7663' }}>Interest Payments.</span>
             </h1>
 
             <p
@@ -56,7 +56,7 @@ export function CalculatorLanding({
               style={{ animationDelay: '250ms', fontSize: '15px', color: '#666666' }}
             >
               Resolve it in <span className="font-bold" style={{ color: '#0C7663' }}>3 years</span> instead of{' '}
-              <span className="font-bold" style={{ color: '#EB4015' }}>15</span> and stop carrying business risk on your personal credit.
+              <span className="font-bold" style={{ color: '#EB4015' }}>15</span> — and stop working overtime to keep up with interest.
             </p>
 
             <div
@@ -112,7 +112,7 @@ export function CalculatorLanding({
             endYear: 2029,
             totalPaid: 22500,
           }}
-          disclaimer="Based on $45,000 in business-origin debt at 22% APR, starting 2026. Relief estimate uses industry-average program terms. Individual results vary; not a guarantee of savings or timeline."
+          disclaimer="Based on $45,000 in unsecured debt at 22% APR, starting 2026. Relief estimate uses industry-average program terms. Individual results vary; not a guarantee of savings or timeline."
           onCta={onCta}
         />
       </DebtRealityAnchor>

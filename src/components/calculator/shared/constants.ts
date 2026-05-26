@@ -59,33 +59,29 @@ export const MOTIVATION_DEFAULTS: Record<
 
 export const FAQ_ITEMS = [
   {
-    id: 'monthly_payment',
-    question: 'How much will I have to pay each month?',
-    answer: 'Debt relief companies typically lower your total amount owed by 40-60%. They do this by negotiating lower rates with creditors who prefer a smaller payment instead of nothing. While everyone\u2019s situation is different and results vary, all your debt is consolidated into 1 manageable payment each month:',
-    bullets: [
-      'Clients with $10,000 to $20,000 in debt save an average of $317 per month (that\u2019s around $3,800 a year!)',
-      'Clients with $20,000 to $40,000 in debt save an average of $585 per month (that\u2019s around $7,000 a year!)',
-    ],
+    id: 'nursing_license',
+    question: 'Will this affect my nursing license or background check?',
+    answer: 'Debt relief doesn\u2019t appear on nursing license records or most healthcare employer background checks. Credit checks may show enrolled accounts during the program, but the relief process itself isn\u2019t a regulatory issue for healthcare licensing.',
   },
   {
-    id: 'credit_score',
-    question: 'Will this destroy my credit score?',
-    answer: 'Checking eligibility has zero impact. Enrolling in debt settlement does affect your credit score, this is worth being honest about. Accounts become delinquent during the process, which impacts your score. However, most people enrolling already have damaged credit from late payments, and most find their score begins recovering within 12\u201318 months of completing the program. The question to weigh: does a temporary credit impact matter more than eliminating five or six figures of compounding debt?',
+    id: 'continuing_education',
+    question: 'What if my debt is from continuing education or certifications?',
+    answer: 'Personal unsecured debt qualifies regardless of what it was used for \u2014 including continuing education, certification fees, or licensing prep. The exception is federal student loans, which aren\u2019t covered by these programs.',
   },
   {
-    id: 'fee',
-    question: 'Is there a fee to check?',
-    answer: 'No upfront fees, ever. Programs only charge a fee after a settlement has been reached. This is standard industry practice, required by FTC rules.',
+    id: 'overtime',
+    question: 'Can I keep working overtime while in the program?',
+    answer: 'Yes. The program works in the background \u2014 you continue your normal schedule. Many enrollees actually reduce their overtime once the monthly burden eases.',
   },
   {
-    id: 'qualify',
-    question: 'What\u2019s the minimum debt to qualify?',
-    answer: 'Most programs require at least $10,000 in unsecured debt. Credit cards, medical bills, and personal loans typically qualify; mortgages, auto loans and public student loans generally do not.',
+    id: 'employer',
+    question: 'Will my hospital or employer find out?',
+    answer: 'No. The program is private \u2014 no court filings, no public records, no employer notifications. It does not appear on standard employment verifications.',
   },
   {
     id: 'bankruptcy',
     question: 'How is this different from bankruptcy?',
-    answer: 'Debt settlement is a private negotiation\u2014 no court, no public record. Most people complete the process in 24\u201348 months. Bankruptcy (Chapter 7 or 13) is a legal proceeding that appears on your public record for 7\u201310 years and affects significantly more aspects of your financial life. Many people who qualify for settlement use it precisely to avoid bankruptcy.',
+    answer: 'Debt settlement is a private negotiation \u2014 no court, no public record, typically completed in 24\u201348 months. Bankruptcy is a legal proceeding that appears on your public record for 7\u201310 years and can affect licensing in some healthcare specialties. Many healthcare workers use settlement specifically to avoid that risk.',
   },
 ] as const
 
@@ -102,8 +98,8 @@ export const CLOSING_TRUST = {
 
 /** Landing radio labels (same order as MotivationDriver keys above) */
 export const MOTIVATION_OPTIONS: { id: MotivationDriver; label: string }[] = [
-  { id: 'stop_credit_damage', label: 'Stopping business debt from sinking my credit' },
   { id: 'resolve_faster', label: 'Resolving it in years, not decades' },
-  { id: 'keep_cash_flow', label: 'Keeping cash flow alive for the business' },
-  { id: 'separate_liability', label: 'Separating business liability from personal' },
+  { id: 'pay_less_interest', label: 'Stopping interest from eating my paycheck' },
+  { id: 'lower_monthly_payments', label: 'Lowering the monthly burden' },
+  { id: 'debt_free_fast', label: 'Getting back the hours I\u2019ve been losing' },
 ]

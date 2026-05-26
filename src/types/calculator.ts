@@ -6,11 +6,33 @@
 
 export type CalcStep =
   | 'intro'
-  | 'debtAmount'
-  | 'monthlyPayment'
-  | 'revenue'
+  | 'role'
+  | 'totalDebt'
+  | 'shiftSituation'
   | 'loader'
   | 'reveal'
+
+export type HealthcareRole =
+  | 'rn'
+  | 'lpn_lvn'
+  | 'cna_aide_tech'
+  | 'therapist_allied'
+  | 'physician_np_pa'
+  | 'other'
+
+export type TotalDebtRange =
+  | '15k-20k'
+  | '20k-35k'
+  | '35k-50k'
+  | '50k-75k'
+  | '75k-100k'
+  | '100k+'
+
+export type ShiftSituation =
+  | 'full_time_no_extra'
+  | 'occasional_overtime'
+  | 'regular_overtime'
+  | 'multiple_jobs'
 
 /** v3 landing motivation — maps to calculator defaults */
 export type MotivationDriver =
@@ -32,6 +54,10 @@ export interface CalcFunnelData {
   monthlyPayment: number
   monthlyRevenue?: number
   motivationDriver?: MotivationDriver | null
+  role?: HealthcareRole
+  totalDebt?: TotalDebtRange
+  totalDebtMid?: number
+  shiftSituation?: ShiftSituation
   firstName?: string
   lastName?: string
   email?: string

@@ -3,22 +3,29 @@
 import * as React from 'react'
 import {
   CalcLoader,
-  DebtSlider,
-  PaymentSlider,
-  RevenueSlider,
+  RoleStep,
+  TotalDebtStep,
+  ShiftSituationStep,
   RevealScreen,
 } from '@/components/calculator'
 import { CalculatorLanding } from '@/components/calculator/intro/CalculatorLanding'
 import { CalcProgressBar } from '@/components/calculator/CalcProgressBar'
 import { Header } from '@/components/layout/Header'
 import { DEFAULT_APR, MOTIVATION_DEFAULTS } from '@/components/calculator/shared/constants'
-import type { CalcStep, CalcFunnelData, MotivationDriver } from '@/types/calculator'
+import type {
+  CalcStep,
+  CalcFunnelData,
+  MotivationDriver,
+  HealthcareRole,
+  TotalDebtRange,
+  ShiftSituation,
+} from '@/types/calculator'
 
 const STEP_ORDER: CalcStep[] = [
   'intro',
-  'debtAmount',
-  'monthlyPayment',
-  'revenue',
+  'role',
+  'totalDebt',
+  'shiftSituation',
   'loader',
   'reveal',
 ]
@@ -77,7 +84,7 @@ export default function CalculatorPage() {
             }}
             onCta={() => {
               window.scrollTo({ top: 0, behavior: 'smooth' })
-              goTo('debtAmount')
+              goTo('role')
             }}
           />
         </div>
@@ -91,29 +98,29 @@ export default function CalculatorPage() {
 
   const renderStep = () => {
     switch (step) {
-      case 'debtAmount':
+      case 'role':
         return (
-          <DebtSlider
-            onSubmit={(share) => {
-              update({ businessDebtShare: share })
-              goTo('monthlyPayment')
+          <RoleStep
+            onSubmit={(role: HealthcareRole) => {
+              update({ role })
+              goTo('totalDebt')
             }}
           />
         )
-      case 'monthlyPayment':
+      case 'totalDebt':
         return (
-          <PaymentSlider
-            onSubmit={(v) => {
-              update({ debtAmount: v })
-              goTo('revenue')
+          <TotalDebtStep
+            onSubmit={(range: TotalDebtRange, mid: number) => {
+              update({ totalDebt: range, totalDebtMid: mid, debtAmount: mid })
+              goTo('shiftSituation')
             }}
           />
         )
-      case 'revenue':
+      case 'shiftSituation':
         return (
-          <RevenueSlider
-            onSubmit={(v) => {
-              update({ monthlyRevenue: v })
+          <ShiftSituationStep
+            onSubmit={(situation: ShiftSituation) => {
+              update({ shiftSituation: situation })
               goTo('loader')
             }}
           />
@@ -122,8 +129,6 @@ export default function CalculatorPage() {
         return (
           <RevealScreen
             debtAmount={data.debtAmount}
-            businessDebtShare={data.businessDebtShare ?? 1}
-            monthlyRevenue={data.monthlyRevenue}
           />
         )
       default:

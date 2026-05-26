@@ -62,9 +62,12 @@ const DONUT_STROKE = DONUT_OUTER_R - DONUT_INNER_R
 const DONUT_R = (DONUT_OUTER_R + DONUT_INNER_R) / 2
 const DONUT_CIRC = 2 * Math.PI * DONUT_R
 
-function roundTo(value: number, multiple: number): number {
-  return Math.round(value / multiple) * multiple
+function roundTo250(value: number): number {
+  return Math.round(value / 250) * 250
 }
+
+const CURRENT_YEARS = 15
+const PROGRAM_YEARS = 3
 
 function useInView(threshold = 0.3) {
   const ref = React.useRef<HTMLDivElement>(null)
@@ -89,45 +92,12 @@ function useInView(threshold = 0.3) {
 
 interface RevealScreenProps {
   debtAmount: number
-  businessDebtShare: number
-  monthlyRevenue?: number
   onContinue?: () => void
   skipIntro?: boolean
 }
 
-interface RevenueBandProfile {
-  currentMultiplier: number
-  settlementRate: number
-  currentYears: number
-  programYears: number
-}
-
-function getRevenueBandProfile(monthlyRevenue?: number): RevenueBandProfile {
-  if (!monthlyRevenue || monthlyRevenue <= 0) {
-    return { currentMultiplier: 1.95, settlementRate: 0.5, currentYears: 15, programYears: 3 }
-  }
-  if (monthlyRevenue <= 2000) {
-    return { currentMultiplier: 2.15, settlementRate: 0.46, currentYears: 18, programYears: 3 }
-  }
-  if (monthlyRevenue <= 5000) {
-    return { currentMultiplier: 2.05, settlementRate: 0.48, currentYears: 17, programYears: 3 }
-  }
-  if (monthlyRevenue <= 10000) {
-    return { currentMultiplier: 1.95, settlementRate: 0.5, currentYears: 15, programYears: 3 }
-  }
-  if (monthlyRevenue <= 25000) {
-    return { currentMultiplier: 1.9, settlementRate: 0.52, currentYears: 14, programYears: 3 }
-  }
-  if (monthlyRevenue <= 50000) {
-    return { currentMultiplier: 1.85, settlementRate: 0.54, currentYears: 13, programYears: 3 }
-  }
-  return { currentMultiplier: 1.8, settlementRate: 0.56, currentYears: 12, programYears: 3 }
-}
-
 export function RevealScreen({
   debtAmount,
-  businessDebtShare,
-  monthlyRevenue,
   onContinue,
   skipIntro,
 }: RevealScreenProps) {
@@ -173,48 +143,32 @@ export function RevealScreen({
     }
   }, [skipIntro])
 
-  const businessOriginDebt = roundTo(debtAmount * businessDebtShare, 500)
-  const personalOriginDebt = debtAmount - businessOriginDebt
-  const businessPct = Math.round(businessDebtShare * 100)
-  const personalPct = 100 - businessPct
-  const profile = getRevenueBandProfile(monthlyRevenue)
-  const currentPaymentTotal = roundTo(businessOriginDebt * profile.currentMultiplier, 500)
-  const estimatedSettlement = roundTo(businessOriginDebt * profile.settlementRate, 500)
-  const amountLessPaid = Math.max(0, currentPaymentTotal - estimatedSettlement)
-  const yearsSaved = Math.max(0, profile.currentYears - profile.programYears)
-  const hasCostSavings = amountLessPaid > 0
-  const hasTimeSavings = yearsSaved > 0
-  const currentYearsLabel = `${profile.currentYears} ${profile.currentYears === 1 ? 'year' : 'years'}`
-  const programYearsLabel = `${profile.programYears} ${profile.programYears === 1 ? 'year' : 'years'}`
-  const savingsHeading = hasCostSavings && hasTimeSavings
-    ? `Qualifying saves you ~${formatCurrency(amountLessPaid)} and ${yearsSaved} years.`
-    : hasCostSavings
-      ? `Qualifying saves you ~${formatCurrency(amountLessPaid)}.`
-      : hasTimeSavings
-        ? `Qualifying can cut your payoff timeline by ${yearsSaved} years.`
-        : 'Qualifying can simplify your payoff timeline.'
-  const timelineBlurb = hasTimeSavings
-    ? `At your current pace, this debt runs alongside your business for the next ${currentYearsLabel}. Entrepreneur-tier relief closes it in ${programYearsLabel}, and gives you back the runway in between.`
-    : `At your current pace, this debt still stretches over roughly ${currentYearsLabel}. Entrepreneur-tier relief can reduce the amount resolved and simplify how it gets paid.`
+  const totalDebt = debtAmount
+  const currentPaymentTotal = roundTo250(totalDebt * 1.95)
+  const interestAccrued = currentPaymentTotal - totalDebt
+  const estimatedSettlement = roundTo250(totalDebt * 0.50)
+  const amountSaved = currentPaymentTotal - estimatedSettlement
 
-  const businessArc = (businessPct / 100) * DONUT_CIRC
+  const yearsSaved = CURRENT_YEARS - PROGRAM_YEARS
+  const debtPct = Math.round((totalDebt / currentPaymentTotal) * 100)
+  const interestPct = 100 - debtPct
+  const debtArc = (debtPct / 100) * DONUT_CIRC
 
   const clipId = React.useId()
   const startYear = new Date().getFullYear()
-  const currentEndYear = startYear + profile.currentYears
-  const programEndYear = startYear + profile.programYears
-  const reliefFraction = profile.programYears / profile.currentYears
+  const currentEndYear = startYear + CURRENT_YEARS
+  const programEndYear = startYear + PROGRAM_YEARS
+  const reliefFraction = PROGRAM_YEARS / CURRENT_YEARS
   const currentD = generateCurrentPaymentCurve()
   const reliefD = generateProgramCurve(reliefFraction)
   const reliefEndX = PAD.left + reliefFraction * INNER_W
   const currentEndX = PAD.left + INNER_W
   const bottomY = PAD.top + INNER_H
 
-  const totalYears = Math.max(1, profile.currentYears)
-  const yearStep = totalYears > 15 ? 4 : 3
+  const yearStep = 3
   const xTicks: { year: number; x: number }[] = []
   for (let y = startYear; y <= currentEndYear; y += yearStep) {
-    const t = (y - startYear) / totalYears
+    const t = (y - startYear) / CURRENT_YEARS
     xTicks.push({ year: y, x: PAD.left + t * INNER_W })
   }
   if (xTicks[xTicks.length - 1]?.year !== currentEndYear) {
@@ -225,7 +179,7 @@ export function RevealScreen({
     <div className="w-full max-w-[555px] mx-auto px-4 sm:px-6 pt-2 sm:pt-4 pb-4 sm:pb-8">
       <div className="flex flex-col items-start w-full">
 
-        {/* ── Phase label — H3 ── */}
+        {/* ── Phase label ── */}
         <p
           className={cn(
             'mb-3 transition-opacity duration-500',
@@ -242,7 +196,7 @@ export function RevealScreen({
           You Qualify
         </p>
 
-        {/* ── Headline — H1 ── */}
+        {/* ── H1 ── */}
         <h1
           className={cn(
             'font-display mb-3 transition-opacity duration-700',
@@ -255,12 +209,12 @@ export function RevealScreen({
             color: NAVY,
           }}
         >
-          Of your {formatCurrency(debtAmount)} total,{' '}
-          <span style={{ color: TEAL }}>{formatCurrency(businessOriginDebt)} qualifies</span> for
-          entrepreneur-tier relief.
+          Your <span style={{ color: TEAL }}>{formatCurrency(totalDebt)}</span> in
+          unsecured debt qualifies for{' '}
+          <span style={{ color: TEAL }}>healthcare-worker-tier relief.</span>
         </h1>
 
-        {/* ── Sub-copy — Body lead ── */}
+        {/* ── Sub-copy ── */}
         <p
           className={cn(
             'mb-10 transition-opacity duration-700',
@@ -274,13 +228,14 @@ export function RevealScreen({
             transitionDelay: '200ms',
           }}
         >
-          Most owners in your position will pay roughly {formatCurrency(currentPaymentTotal)} on
-          this debt over the next {currentYearsLabel}. Entrepreneur-tier relief drops that to
-          ~{formatCurrency(estimatedSettlement)} over {programYearsLabel}. Here&apos;s the
+          Most healthcare workers in your position will pay roughly{' '}
+          {formatCurrency(currentPaymentTotal)} on this debt over the next 15 years
+          — working overtime to keep up with interest. Relief drops that to
+          ~{formatCurrency(estimatedSettlement)} over 3 years. Here&apos;s the
           breakdown.
         </p>
 
-        {/* ── Section 1: The split (donut chart) ── */}
+        {/* ── Donut chart ── */}
         <div
           ref={pieRef}
           className={cn(
@@ -289,7 +244,7 @@ export function RevealScreen({
           )}
         >
           <p className="font-bold mb-5" style={{ fontSize: '14px', color: NAVY }}>
-            The split, based on your answers
+            The cost breakdown, based on your answers
           </p>
 
           <div className="flex flex-col sm:flex-row items-center sm:items-center gap-6 sm:gap-8">
@@ -309,10 +264,10 @@ export function RevealScreen({
                   cy={DONUT_CENTER}
                   r={DONUT_R}
                   fill="none"
-                  stroke={TEAL}
+                  stroke={GREEN}
                   strokeWidth={DONUT_STROKE}
                   strokeDasharray={`${DONUT_CIRC} ${DONUT_CIRC}`}
-                  strokeDashoffset={pieInView ? DONUT_CIRC - businessArc : DONUT_CIRC}
+                  strokeDashoffset={pieInView ? DONUT_CIRC - debtArc : DONUT_CIRC}
                   transform={`rotate(-90 ${DONUT_CENTER} ${DONUT_CENTER})`}
                   style={{ transition: 'stroke-dashoffset 800ms ease-out' }}
                 />
@@ -324,7 +279,7 @@ export function RevealScreen({
                   fontWeight="700"
                   fill={TEAL}
                 >
-                  {formatCurrency(businessOriginDebt)}
+                  {formatCurrency(currentPaymentTotal)}
                 </text>
                 <text
                   x={DONUT_CENTER}
@@ -333,7 +288,7 @@ export function RevealScreen({
                   fontSize="13"
                   fill={CAPTION_GREY}
                 >
-                  qualifies
+                  you&apos;d pay
                 </text>
               </svg>
             </div>
@@ -343,12 +298,12 @@ export function RevealScreen({
               <div className="flex items-start gap-3">
                 <div
                   className="w-4 h-4 rounded-sm flex-shrink-0 mt-0.5"
-                  style={{ backgroundColor: TEAL }}
+                  style={{ backgroundColor: GREEN }}
                 />
                 <p style={{ fontSize: '14px', fontWeight: 600, color: NAVY }}>
-                  Qualifies for entrepreneur relief: {formatCurrency(businessOriginDebt)}
+                  Your starting debt: {formatCurrency(totalDebt)}
                   <span style={{ color: CAPTION_GREY, fontWeight: 400, marginLeft: '6px' }}>
-                    ({businessPct}%)
+                    ({debtPct}%)
                   </span>
                 </p>
               </div>
@@ -358,9 +313,9 @@ export function RevealScreen({
                   style={{ backgroundColor: SEGMENT_GREY }}
                 />
                 <p style={{ fontSize: '14px', fontWeight: 600, color: NAVY }}>
-                  Standard consumer relief: {formatCurrency(personalOriginDebt)}
+                  Interest accrued: {formatCurrency(interestAccrued)}
                   <span style={{ color: CAPTION_GREY, fontWeight: 400, marginLeft: '6px' }}>
-                    ({personalPct}%)
+                    ({interestPct}%)
                   </span>
                 </p>
               </div>
@@ -368,7 +323,7 @@ export function RevealScreen({
           </div>
         </div>
 
-        {/* ── CTA (after donut) ── */}
+        {/* ── CTA ── */}
         <div
           className={cn(
             'w-full mb-8 transition-all duration-700',
@@ -377,7 +332,7 @@ export function RevealScreen({
           style={{ transitionDelay: '100ms' }}
         >
           <Button fullWidth showTrailingIcon onClick={onContinue}>
-            Claim my entrepreneur-tier relief
+            Claim my healthcare-worker-tier relief
           </Button>
           <div className="flex flex-col items-center gap-1 mt-3">
             <p style={{ fontSize: '14px', color: CAPTION_GREY }}>
@@ -389,7 +344,7 @@ export function RevealScreen({
           </div>
         </div>
 
-        {/* ── Section 2: The math — H2 header + chart ── */}
+        {/* ── Comparison section ── */}
         <h2
           className={cn(
             'mb-1 transition-opacity duration-700',
@@ -403,7 +358,7 @@ export function RevealScreen({
             transitionDelay: '100ms',
           }}
         >
-          {savingsHeading}
+          Relief saves you ~{formatCurrency(amountSaved)} and {yearsSaved} years.
         </h2>
         <p
           className={cn(
@@ -412,9 +367,12 @@ export function RevealScreen({
           )}
           style={{ fontSize: '14px', color: CAPTION_GREY, transitionDelay: '100ms' }}
         >
-          {timelineBlurb}
+          At your current pace, this debt sits alongside your career for the next 15
+          years — paid down in overtime. Healthcare-worker-tier relief closes it in 3,
+          and stops the trade.
         </p>
 
+        {/* ── Line chart ── */}
         <div
           ref={barsRef}
           className={cn(
@@ -502,7 +460,7 @@ export function RevealScreen({
 
               {/* Y-axis labels */}
               <text x={PAD.left - 6} y={PAD.top + 4} textAnchor="end" fontSize="9" fill="#B0B0B0">
-                {formatCurrency(businessOriginDebt)}
+                {formatCurrency(totalDebt)}
               </text>
               <text x={PAD.left - 6} y={bottomY + 3} textAnchor="end" fontSize="9" fill="#B0B0B0">
                 $0
@@ -561,17 +519,17 @@ export function RevealScreen({
               {/* Legend */}
               <line x1={PAD.left} y1={PAD.top - 16} x2={PAD.left + 18} y2={PAD.top - 16} stroke={GREEN} strokeWidth="3" />
               <text x={PAD.left + 22} y={PAD.top - 13} fontSize="9" fill={NAVY} fontWeight="500">
-                With entrepreneur relief
+                With healthcare-worker relief
               </text>
-              <line x1={PAD.left + 160} y1={PAD.top - 16} x2={PAD.left + 178} y2={PAD.top - 16} stroke={RED} strokeWidth="3" />
-              <text x={PAD.left + 182} y={PAD.top - 13} fontSize="9" fill="#B0B0B0">
+              <line x1={PAD.left + 180} y1={PAD.top - 16} x2={PAD.left + 198} y2={PAD.top - 16} stroke={RED} strokeWidth="3" />
+              <text x={PAD.left + 202} y={PAD.top - 13} fontSize="9" fill="#B0B0B0">
                 At your current payment
               </text>
             </svg>
           </div>
         </div>
 
-        {/* ── Disclaimer — Caption ── */}
+        {/* ── Disclaimer ── */}
         <div
           className={cn(
             'w-full rounded-xl px-5 py-4 mb-6 flex items-start gap-3 transition-all duration-700',
@@ -594,10 +552,11 @@ export function RevealScreen({
             />
           </svg>
           <p style={{ fontSize: '13px', color: '#555555', lineHeight: '1.5' }}>
-            These estimates are based on industry-average settlement outcomes from the American
-            Association for Debt Resolution. Your actual results depend on your specific financial
-            situation, creditor agreements, and the program you enroll in. Not a guarantee of savings
-            or timeline.
+            These estimates are based on industry-average settlement outcomes from the
+            American Association for Debt Resolution. Interest projections based on 22%
+            APR assumption typical of revolving consumer debt. Your actual results
+            depend on your specific financial situation, creditor agreements, and the
+            program you enroll in. Not a guarantee of savings or timeline.
           </p>
         </div>
       </div>

@@ -92,7 +92,7 @@ export function ClosingSection({ onCta }: ClosingSectionProps) {
               className="font-display mb-5"
               style={{ fontSize: '20px', fontWeight: 600, color: '#1B2A4A' }}
             >
-              Ready to see your debt-free date?
+              Ready to see your Shift-to-Relief plan?
             </h3>
 
             <Button
@@ -101,7 +101,7 @@ export function ClosingSection({ onCta }: ClosingSectionProps) {
               onClick={handleClick}
               className="max-w-[420px] mx-auto"
             >
-              Calculate your debt-free date
+              Calculate my Shift-to-Relief plan
             </Button>
 
             <p className="mt-3" style={{ fontSize: '13px', color: '#9CA3AF' }}>

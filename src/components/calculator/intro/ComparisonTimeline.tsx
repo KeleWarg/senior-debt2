@@ -127,197 +127,219 @@ export function ComparisonTimeline({
             color: '#666666',
           }}
         >
-          Both paths start with the same business-origin debt. The difference is
-          what happens to it.
+          Both paths carry the same debt. The difference is whether you keep
+          paying it off in overtime.
         </p>
       </div>
 
-      {/* ── Bad receipt card ── */}
-      <div
-        className="transition-all duration-500 ease-out"
-        style={{
-          opacity: show('bad') ? 1 : 0,
-          transform: show('bad') ? 'translateY(0)' : 'translateY(16px)',
-        }}
-      >
+      {/* ── Receipt cards — side by side on sm+ ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] items-stretch gap-4 sm:gap-0">
+        {/* Bad receipt card */}
         <div
-          className="rounded-2xl"
+          className="transition-all duration-500 ease-out"
           style={{
-            backgroundColor: '#FFFFFF',
-            border: '1px solid rgba(235, 64, 21, 0.4)',
-            padding: 'clamp(20px, 4vw, 24px)',
+            opacity: show('bad') ? 1 : 0,
+            transform: show('bad') ? 'translateY(0)' : 'translateY(16px)',
           }}
         >
-          <p
-            className="mb-4"
+          <div
+            className="rounded-2xl h-full flex flex-col"
             style={{
-              fontSize: '13px',
-              fontWeight: 600,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: RED,
-              opacity: 0.85,
+              backgroundColor: '#FFFFFF',
+              border: '1px solid rgba(235, 64, 21, 0.4)',
+              padding: 'clamp(20px, 4vw, 24px)',
             }}
           >
-            At Your Current Payment
-          </p>
-
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-baseline">
-              <span style={{ fontSize: '15px', fontWeight: 400, color: NAVY }}>
-                Starting debt
-              </span>
-              <span
-                className="font-display"
-                style={{ fontSize: '18px', fontWeight: 500, color: NAVY }}
-              >
-                {formatCurrency(businessOriginDebt)}
-              </span>
-            </div>
-            <div className="flex justify-between items-baseline">
-              <span style={{ fontSize: '15px', fontWeight: 400, color: NAVY }}>
-                Interest accrued over {currentPayment.years} years
-              </span>
-              <span
-                className="font-display"
-                style={{ fontSize: '18px', fontWeight: 500, color: NAVY }}
-              >
-                {formatCurrency(interestAccrued)}
-              </span>
-            </div>
-          </div>
-
-          <div
-            className="my-3"
-            style={{ height: '1px', backgroundColor: DIVIDER }}
-          />
-
-          <div className="flex justify-between items-baseline">
-            <span style={{ fontSize: '15px', fontWeight: 600, color: NAVY }}>
-              Total you&apos;d pay
-            </span>
-            <span
-              className="font-display"
+            <p
+              className="mb-4"
               style={{
-                fontSize: 'clamp(20px, 3.5vw, 22px)',
-                fontWeight: 700,
-                color: NAVY,
+                fontSize: '13px',
+                fontWeight: 600,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: RED,
+                opacity: 0.85,
               }}
             >
-              {formatCurrency(currentPayment.totalPaid)}
-            </span>
+              At Your Current Payment
+            </p>
+
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between items-baseline gap-2">
+                <span style={{ fontSize: '14px', fontWeight: 400, color: NAVY }}>
+                  Starting debt
+                </span>
+                <span
+                  className="font-display whitespace-nowrap"
+                  style={{ fontSize: '16px', fontWeight: 500, color: NAVY }}
+                >
+                  {formatCurrency(businessOriginDebt)}
+                </span>
+              </div>
+              <div className="flex justify-between items-baseline gap-2">
+                <span style={{ fontSize: '14px', fontWeight: 400, color: NAVY }}>
+                  Interest over {currentPayment.years}yr
+                </span>
+                <span
+                  className="font-display whitespace-nowrap"
+                  style={{ fontSize: '16px', fontWeight: 500, color: NAVY }}
+                >
+                  {formatCurrency(interestAccrued)}
+                </span>
+              </div>
+            </div>
+
+            <div
+              className="my-3"
+              style={{ height: '1px', backgroundColor: DIVIDER }}
+            />
+
+            <div className="flex justify-between items-baseline gap-2 mt-auto">
+              <span style={{ fontSize: '14px', fontWeight: 600, color: NAVY }}>
+                Total you&apos;d pay
+              </span>
+              <span
+                className="font-display whitespace-nowrap"
+                style={{
+                  fontSize: 'clamp(18px, 3vw, 20px)',
+                  fontWeight: 700,
+                  color: NAVY,
+                }}
+              >
+                {formatCurrency(currentPayment.totalPaid)}
+              </span>
+            </div>
+            <p
+              className="text-right mt-2"
+              style={{ fontSize: '12px', color: '#999999' }}
+            >
+              Resolved by {currentPayment.endYear}
+            </p>
           </div>
-          <p
-            className="text-right mt-2"
-            style={{ fontSize: '13px', color: '#999999' }}
-          >
-            Resolved by {currentPayment.endYear}
-          </p>
         </div>
-      </div>
 
-      {/* ── Arrow ── */}
-      <div
-        className="flex justify-center py-6 transition-opacity duration-300"
-        style={{ opacity: show('arrow') ? 1 : 0 }}
-      >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          aria-hidden
-        >
-          <path
-            d="M8 2v10m0 0l-4-4m4 4l4-4"
-            stroke="#999999"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </div>
-
-      {/* ── Good receipt card ── */}
-      <div
-        className="transition-all duration-500 ease-out"
-        style={{
-          opacity: show('good') ? 1 : 0,
-          transform: show('good') ? 'translateY(0)' : 'translateY(16px)',
-        }}
-      >
+        {/* Arrow — vertical on mobile, horizontal on sm+ */}
         <div
-          className="rounded-2xl"
+          className="flex items-center justify-center transition-opacity duration-300"
+          style={{ opacity: show('arrow') ? 1 : 0 }}
+        >
+          {/* Mobile: down arrow */}
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden
+            className="sm:hidden"
+          >
+            <path
+              d="M8 2v10m0 0l-4-4m4 4l4-4"
+              stroke="#999999"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          {/* Desktop: right arrow */}
+          <svg
+            width="24"
+            height="16"
+            viewBox="0 0 24 16"
+            fill="none"
+            aria-hidden
+            className="hidden sm:block mx-3"
+          >
+            <path
+              d="M2 8h18m0 0l-4-4m4 4l-4 4"
+              stroke="#999999"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+
+        {/* Good receipt card */}
+        <div
+          className="transition-all duration-500 ease-out"
           style={{
-            backgroundColor: '#FFFFFF',
-            border: `2px solid ${GREEN}`,
-            padding: 'clamp(20px, 4vw, 24px)',
+            opacity: show('good') ? 1 : 0,
+            transform: show('good') ? 'translateY(0)' : 'translateY(16px)',
           }}
         >
-          <p
-            className="mb-4"
+          <div
+            className="rounded-2xl h-full flex flex-col"
             style={{
-              fontSize: '13px',
-              fontWeight: 600,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: GREEN,
+              backgroundColor: '#FFFFFF',
+              border: `2px solid ${GREEN}`,
+              padding: 'clamp(20px, 4vw, 24px)',
             }}
           >
-            With Entrepreneur-Tier Relief
-          </p>
-
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-baseline">
-              <span style={{ fontSize: '15px', fontWeight: 400, color: NAVY }}>
-                Starting debt
-              </span>
-              <span
-                className="font-display"
-                style={{ fontSize: '18px', fontWeight: 500, color: NAVY }}
-              >
-                {formatCurrency(businessOriginDebt)}
-              </span>
-            </div>
-            <div className="flex justify-between items-baseline">
-              <span style={{ fontSize: '15px', fontWeight: 400, color: NAVY }}>
-                Settlement reduction
-              </span>
-              <span
-                className="font-display"
-                style={{ fontSize: '18px', fontWeight: 500, color: GREEN }}
-              >
-                &minus;{formatCurrency(settlementReduction)}
-              </span>
-            </div>
-          </div>
-
-          <div
-            className="my-3"
-            style={{ height: '1px', backgroundColor: DIVIDER }}
-          />
-
-          <div className="flex justify-between items-baseline">
-            <span style={{ fontSize: '15px', fontWeight: 600, color: NAVY }}>
-              Total you&apos;d pay
-            </span>
-            <span
-              className="font-display"
+            <p
+              className="mb-4"
               style={{
-                fontSize: 'clamp(20px, 3.5vw, 22px)',
-                fontWeight: 700,
+                fontSize: '13px',
+                fontWeight: 600,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
                 color: GREEN,
               }}
             >
-              {formatCurrency(withProgram.totalPaid)}
-            </span>
+              With Healthcare-Worker-Tier Relief
+            </p>
+
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between items-baseline gap-2">
+                <span style={{ fontSize: '14px', fontWeight: 400, color: NAVY }}>
+                  Starting debt
+                </span>
+                <span
+                  className="font-display whitespace-nowrap"
+                  style={{ fontSize: '16px', fontWeight: 500, color: NAVY }}
+                >
+                  {formatCurrency(businessOriginDebt)}
+                </span>
+              </div>
+              <div className="flex justify-between items-baseline gap-2">
+                <span style={{ fontSize: '14px', fontWeight: 400, color: NAVY }}>
+                  Settlement reduction
+                </span>
+                <span
+                  className="font-display whitespace-nowrap"
+                  style={{ fontSize: '16px', fontWeight: 500, color: GREEN }}
+                >
+                  &minus;{formatCurrency(settlementReduction)}
+                </span>
+              </div>
+            </div>
+
+            <div
+              className="my-3"
+              style={{ height: '1px', backgroundColor: DIVIDER }}
+            />
+
+            <div className="flex justify-between items-baseline gap-2 mt-auto">
+              <span style={{ fontSize: '14px', fontWeight: 600, color: NAVY }}>
+                Total you&apos;d pay
+              </span>
+              <span
+                className="font-display whitespace-nowrap"
+                style={{
+                  fontSize: 'clamp(18px, 3vw, 20px)',
+                  fontWeight: 700,
+                  color: GREEN,
+                }}
+              >
+                {formatCurrency(withProgram.totalPaid)}
+              </span>
+            </div>
+            <p
+              className="text-right mt-2"
+              style={{ fontSize: '12px', color: GREEN, opacity: 0.7 }}
+            >
+              Resolved by {withProgram.endYear}
+            </p>
           </div>
-          <p
-            className="text-right mt-2"
-            style={{ fontSize: '13px', color: GREEN, opacity: 0.7 }}
-          >
-            Resolved by {withProgram.endYear}
-          </p>
         </div>
       </div>
 
@@ -362,7 +384,7 @@ export function ComparisonTimeline({
           }}
         >
           <Button fullWidth showTrailingIcon onClick={onCta}>
-            Calculate my business-to-personal separation
+            Calculate my Shift-to-Relief plan
           </Button>
         </div>
       )}
