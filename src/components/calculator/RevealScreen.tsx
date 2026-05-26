@@ -13,19 +13,11 @@ const MUTED = '#888899'
 const CAPTION_GREY = '#999999'
 const SEGMENT_GREY = '#E0E0E6'
 
-const YEARS_SAVED = 12
-const START_YEAR = 2026
-const CURRENT_END_YEAR = 2041
-const PROGRAM_END_YEAR = 2029
-
 const VB_W = 480
 const VB_H = 240
 const PAD = { top: 32, right: 48, bottom: 44, left: 48 }
 const INNER_W = VB_W - PAD.left - PAD.right
 const INNER_H = VB_H - PAD.top - PAD.bottom
-
-const TOTAL_YEARS = CURRENT_END_YEAR - START_YEAR
-const RELIEF_YEARS = PROGRAM_END_YEAR - START_YEAR
 
 function generateCurrentPaymentCurve(): string {
   const pts: string[] = []
@@ -40,9 +32,9 @@ function generateCurrentPaymentCurve(): string {
   return pts.join(' ')
 }
 
-function generateProgramCurve(): string {
+function generateProgramCurve(reliefFraction: number): string {
   const pts: string[] = []
-  const reliefFrac = RELIEF_YEARS / TOTAL_YEARS
+  const reliefFrac = Math.max(0.08, Math.min(0.95, reliefFraction))
   const n = 30
   for (let i = 0; i <= n; i++) {
     const t = i / n
@@ -97,16 +89,45 @@ function useInView(threshold = 0.3) {
 
 interface RevealScreenProps {
   debtAmount: number
-  interestRate: number
-  monthlyPayment: number
   businessDebtShare: number
+  monthlyRevenue?: number
   onContinue?: () => void
   skipIntro?: boolean
+}
+
+interface RevenueBandProfile {
+  currentMultiplier: number
+  settlementRate: number
+  currentYears: number
+  programYears: number
+}
+
+function getRevenueBandProfile(monthlyRevenue?: number): RevenueBandProfile {
+  if (!monthlyRevenue || monthlyRevenue <= 0) {
+    return { currentMultiplier: 1.95, settlementRate: 0.5, currentYears: 15, programYears: 3 }
+  }
+  if (monthlyRevenue <= 2000) {
+    return { currentMultiplier: 2.15, settlementRate: 0.46, currentYears: 18, programYears: 3 }
+  }
+  if (monthlyRevenue <= 5000) {
+    return { currentMultiplier: 2.05, settlementRate: 0.48, currentYears: 17, programYears: 3 }
+  }
+  if (monthlyRevenue <= 10000) {
+    return { currentMultiplier: 1.95, settlementRate: 0.5, currentYears: 15, programYears: 3 }
+  }
+  if (monthlyRevenue <= 25000) {
+    return { currentMultiplier: 1.9, settlementRate: 0.52, currentYears: 14, programYears: 3 }
+  }
+  if (monthlyRevenue <= 50000) {
+    return { currentMultiplier: 1.85, settlementRate: 0.54, currentYears: 13, programYears: 3 }
+  }
+  return { currentMultiplier: 1.8, settlementRate: 0.56, currentYears: 12, programYears: 3 }
 }
 
 export function RevealScreen({
   debtAmount,
   businessDebtShare,
+  monthlyRevenue,
   onContinue,
   skipIntro,
 }: RevealScreenProps) {
@@ -156,27 +177,48 @@ export function RevealScreen({
   const personalOriginDebt = debtAmount - businessOriginDebt
   const businessPct = Math.round(businessDebtShare * 100)
   const personalPct = 100 - businessPct
-  const currentPaymentTotal = roundTo(businessOriginDebt * 1.95, 500)
-  const estimatedSettlement = roundTo(businessOriginDebt * 0.50, 500)
-  const amountLessPaid = currentPaymentTotal - estimatedSettlement
+  const profile = getRevenueBandProfile(monthlyRevenue)
+  const currentPaymentTotal = roundTo(businessOriginDebt * profile.currentMultiplier, 500)
+  const estimatedSettlement = roundTo(businessOriginDebt * profile.settlementRate, 500)
+  const amountLessPaid = Math.max(0, currentPaymentTotal - estimatedSettlement)
+  const yearsSaved = Math.max(0, profile.currentYears - profile.programYears)
+  const hasCostSavings = amountLessPaid > 0
+  const hasTimeSavings = yearsSaved > 0
+  const currentYearsLabel = `${profile.currentYears} ${profile.currentYears === 1 ? 'year' : 'years'}`
+  const programYearsLabel = `${profile.programYears} ${profile.programYears === 1 ? 'year' : 'years'}`
+  const savingsHeading = hasCostSavings && hasTimeSavings
+    ? `Qualifying saves you ~${formatCurrency(amountLessPaid)} and ${yearsSaved} years.`
+    : hasCostSavings
+      ? `Qualifying saves you ~${formatCurrency(amountLessPaid)}.`
+      : hasTimeSavings
+        ? `Qualifying can cut your payoff timeline by ${yearsSaved} years.`
+        : 'Qualifying can simplify your payoff timeline.'
+  const timelineBlurb = hasTimeSavings
+    ? `At your current pace, this debt runs alongside your business for the next ${currentYearsLabel}. Entrepreneur-tier relief closes it in ${programYearsLabel}, and gives you back the runway in between.`
+    : `At your current pace, this debt still stretches over roughly ${currentYearsLabel}. Entrepreneur-tier relief can reduce the amount resolved and simplify how it gets paid.`
 
   const businessArc = (businessPct / 100) * DONUT_CIRC
 
   const clipId = React.useId()
+  const startYear = new Date().getFullYear()
+  const currentEndYear = startYear + profile.currentYears
+  const programEndYear = startYear + profile.programYears
+  const reliefFraction = profile.programYears / profile.currentYears
   const currentD = generateCurrentPaymentCurve()
-  const reliefD = generateProgramCurve()
-  const reliefEndX = PAD.left + (RELIEF_YEARS / TOTAL_YEARS) * INNER_W
+  const reliefD = generateProgramCurve(reliefFraction)
+  const reliefEndX = PAD.left + reliefFraction * INNER_W
   const currentEndX = PAD.left + INNER_W
   const bottomY = PAD.top + INNER_H
 
-  const yearStep = 3
+  const totalYears = Math.max(1, profile.currentYears)
+  const yearStep = totalYears > 15 ? 4 : 3
   const xTicks: { year: number; x: number }[] = []
-  for (let y = START_YEAR; y <= CURRENT_END_YEAR; y += yearStep) {
-    const t = (y - START_YEAR) / TOTAL_YEARS
+  for (let y = startYear; y <= currentEndYear; y += yearStep) {
+    const t = (y - startYear) / totalYears
     xTicks.push({ year: y, x: PAD.left + t * INNER_W })
   }
-  if (xTicks[xTicks.length - 1]?.year !== CURRENT_END_YEAR) {
-    xTicks.push({ year: CURRENT_END_YEAR, x: PAD.left + INNER_W })
+  if (xTicks[xTicks.length - 1]?.year !== currentEndYear) {
+    xTicks.push({ year: currentEndYear, x: PAD.left + INNER_W })
   }
 
   return (
@@ -233,8 +275,9 @@ export function RevealScreen({
           }}
         >
           Most owners in your position will pay roughly {formatCurrency(currentPaymentTotal)} on
-          this debt over the next 15 years. Entrepreneur-tier relief drops that to
-          ~{formatCurrency(estimatedSettlement)} over 3. Here&apos;s the breakdown.
+          this debt over the next {currentYearsLabel}. Entrepreneur-tier relief drops that to
+          ~{formatCurrency(estimatedSettlement)} over {programYearsLabel}. Here&apos;s the
+          breakdown.
         </p>
 
         {/* ── Section 1: The split (donut chart) ── */}
@@ -360,7 +403,7 @@ export function RevealScreen({
             transitionDelay: '100ms',
           }}
         >
-          Qualifying saves you ~{formatCurrency(amountLessPaid)} and {YEARS_SAVED} years.
+          {savingsHeading}
         </h2>
         <p
           className={cn(
@@ -369,9 +412,7 @@ export function RevealScreen({
           )}
           style={{ fontSize: '14px', color: CAPTION_GREY, transitionDelay: '100ms' }}
         >
-          At your current pace, this debt runs alongside your business for the next
-          15 years. Entrepreneur-tier relief closes it in 3, and gives you back the
-          runway in between.
+          {timelineBlurb}
         </p>
 
         <div
@@ -502,7 +543,7 @@ export function RevealScreen({
                 className="transition-opacity duration-500"
                 style={{ opacity: barsInView ? 1 : 0 }}
               >
-                {PROGRAM_END_YEAR}
+                {programEndYear}
               </text>
               <text
                 x={currentEndX}
@@ -514,7 +555,7 @@ export function RevealScreen({
                 className="transition-opacity duration-500"
                 style={{ opacity: barsInView ? 1 : 0 }}
               >
-                {CURRENT_END_YEAR}
+                {currentEndYear}
               </text>
 
               {/* Legend */}

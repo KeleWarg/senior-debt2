@@ -15,8 +15,6 @@ export type { SliderProps } from './Slider'
 export { Checkbox } from './Checkbox'
 export type { CheckboxProps } from './Checkbox'
 
-export { USMap } from './USMap'
-
 export { AnimatedCounter } from './AnimatedCounter'
 
 export { Starburst } from './Starburst'
@@ -25,13 +23,6 @@ export { LottieIcon } from './LottieIcon'
 
 export { Tooltip } from './Tooltip'
 
-export { AddressAutocomplete } from './AddressAutocomplete'
-export type { ParsedAddress } from './AddressAutocomplete'
-
 export { StickyButtonContainer } from './StickyButtonContainer'
-
-export { DatePicker } from './DatePicker'
-
-export { OTPVerificationModal } from './OTPVerificationModal'
 
 export { ScrollReveal } from './ScrollReveal'

@@ -122,9 +122,8 @@ export default function CalculatorPage() {
         return (
           <RevealScreen
             debtAmount={data.debtAmount}
-            interestRate={DEFAULT_APR}
-            monthlyPayment={data.monthlyPayment}
             businessDebtShare={data.businessDebtShare ?? 1}
+            monthlyRevenue={data.monthlyRevenue}
           />
         )
       default:

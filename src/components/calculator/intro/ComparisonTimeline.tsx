@@ -5,15 +5,14 @@ import { formatCurrency } from '@/lib/utils'
 import { Button } from '@/components/ui'
 
 export interface ComparisonTimelineProps {
+  businessOriginDebt: number
   currentPayment: {
     years: number
-    startYear: number
     endYear: number
     totalPaid: number
   }
   withProgram: {
     years: number
-    startYear: number
     endYear: number
     totalPaid: number
   }
@@ -22,24 +21,39 @@ export interface ComparisonTimelineProps {
   onCta?: () => void
 }
 
-type AnimPhase = 'idle' | 'verdict' | 'bar1' | 'bar1amount' | 'bar2' | 'bar2amount' | 'done'
+const NAVY = '#1B2A4A'
+const GREEN = '#0C7663'
+const RED = '#EB4015'
+const MUTED = '#888899'
+const DIVIDER = '#E0E0E6'
 
-const PHASE_ORDER: AnimPhase[] = ['idle', 'verdict', 'bar1', 'bar1amount', 'bar2', 'bar2amount', 'done']
+type AnimPhase = 'idle' | 'header' | 'bad' | 'arrow' | 'good' | 'climax' | 'done'
+const PHASE_ORDER: AnimPhase[] = [
+  'idle',
+  'header',
+  'bad',
+  'arrow',
+  'good',
+  'climax',
+  'done',
+]
 
 function phaseAtLeast(current: AnimPhase, target: AnimPhase) {
   return PHASE_ORDER.indexOf(current) >= PHASE_ORDER.indexOf(target)
 }
 
 export function ComparisonTimeline({
+  businessOriginDebt,
   currentPayment,
   withProgram,
   disclaimer,
   className,
   onCta,
 }: ComparisonTimelineProps) {
-  const yearsSaved = currentPayment.years - withProgram.years
-  const moneySaved = currentPayment.totalPaid - withProgram.totalPaid
-  const programWidthPercent = Math.round((withProgram.years / currentPayment.years) * 100)
+  const interestAccrued = Math.max(0, currentPayment.totalPaid - businessOriginDebt)
+  const settlementReduction = Math.max(0, businessOriginDebt - withProgram.totalPaid)
+  const youKeepAmount = Math.max(0, currentPayment.totalPaid - withProgram.totalPaid)
+  const yearsSaved = Math.max(0, currentPayment.years - withProgram.years)
 
   const containerRef = React.useRef<HTMLDivElement>(null)
   const [phase, setPhase] = React.useState<AnimPhase>('idle')
@@ -55,151 +69,303 @@ export function ComparisonTimeline({
           startSequence()
         }
       },
-      { threshold: 0.25 },
+      { threshold: 0.2 },
     )
     observer.observe(el)
     return () => observer.disconnect()
   }, [])
 
   function startSequence() {
-    setTimeout(() => setPhase('verdict'), 0)
-    setTimeout(() => setPhase('bar1'), 200)
-    setTimeout(() => setPhase('bar1amount'), 800)
-    setTimeout(() => setPhase('bar2'), 1000)
-    setTimeout(() => setPhase('bar2amount'), 1600)
-    setTimeout(() => setPhase('done'), 1800)
+    setTimeout(() => setPhase('header'), 0)
+    setTimeout(() => setPhase('bad'), 300)
+    setTimeout(() => setPhase('arrow'), 900)
+    setTimeout(() => setPhase('good'), 1100)
+    setTimeout(() => setPhase('climax'), 1700)
+    setTimeout(() => setPhase('done'), 1900)
   }
 
   const show = (target: AnimPhase) => phaseAtLeast(phase, target)
 
   return (
     <div className={className} ref={containerRef}>
-      <div className="rounded-xl border border-neutral-200 bg-white shadow-card overflow-hidden">
-        <div className="px-5 sm:px-8 py-8">
+      {/* ── Section header ── */}
+      <div
+        className="mb-8 transition-all duration-500 ease-out"
+        style={{
+          opacity: show('header') ? 1 : 0,
+          transform: show('header') ? 'translateY(0)' : 'translateY(12px)',
+        }}
+      >
+        <p
+          className="mb-4"
+          style={{
+            fontSize: '13px',
+            fontWeight: 600,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: MUTED,
+          }}
+        >
+          The Comparison
+        </p>
+        <h2
+          className="font-display mb-3"
+          style={{
+            fontSize: 'clamp(24px, 4vw, 28px)',
+            fontWeight: 600,
+            lineHeight: 1.15,
+            color: NAVY,
+          }}
+        >
+          Two ways this {formatCurrency(businessOriginDebt)} plays out
+        </h2>
+        <p
+          style={{
+            fontSize: '16px',
+            fontWeight: 400,
+            lineHeight: 1.5,
+            color: '#666666',
+          }}
+        >
+          Both paths start with the same business-origin debt. The difference is
+          what happens to it.
+        </p>
+      </div>
 
-          {/* Verdict headline — large serif */}
-          <div
-            className="mb-8 transition-all duration-[400ms] ease-out"
+      {/* ── Bad receipt card ── */}
+      <div
+        className="transition-all duration-500 ease-out"
+        style={{
+          opacity: show('bad') ? 1 : 0,
+          transform: show('bad') ? 'translateY(0)' : 'translateY(16px)',
+        }}
+      >
+        <div
+          className="rounded-2xl"
+          style={{
+            backgroundColor: '#FFFFFF',
+            border: '1px solid rgba(235, 64, 21, 0.4)',
+            padding: 'clamp(20px, 4vw, 24px)',
+          }}
+        >
+          <p
+            className="mb-4"
             style={{
-              opacity: show('verdict') ? 1 : 0,
-              transform: show('verdict') ? 'translateY(0)' : 'translateY(12px)',
+              fontSize: '13px',
+              fontWeight: 600,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: RED,
+              opacity: 0.85,
             }}
           >
-            <h3
-              className="font-display font-semibold text-[32px] sm:text-[40px] leading-[1.15]"
-              style={{ color: '#1B2A4A' }}
-            >
-              {yearsSaved} years sooner.
-            </h3>
-            <h3
-              className="font-display font-semibold text-[32px] sm:text-[40px] leading-[1.15]"
-              style={{ color: '#1B2A4A' }}
-            >
-              <span style={{ color: '#0C7663' }}>{formatCurrency(moneySaved)}</span> less paid.
-            </h3>
-          </div>
+            At Your Current Payment
+          </p>
 
-          {/* Bar 1: At current payment — dashed outline */}
-          <div className="mb-2">
-            <p className="text-[13px] font-medium mb-2" style={{ color: '#1B2A4A' }}>
-              At your current payment
-            </p>
-
-            <div
-              className="relative rounded-md flex items-center justify-end px-4 h-10 sm:h-12"
-              style={{
-                border: '2px dashed #EB4015',
-                backgroundColor: 'transparent',
-                width: show('bar1') ? '100%' : '0%',
-                transition: 'width 800ms cubic-bezier(0.22, 1, 0.36, 1)',
-                overflow: 'hidden',
-              }}
-            >
+          <div className="flex flex-col gap-2">
+            <div className="flex justify-between items-baseline">
+              <span style={{ fontSize: '15px', fontWeight: 400, color: NAVY }}>
+                Starting debt
+              </span>
               <span
-                className="text-[18px] font-medium whitespace-nowrap transition-opacity duration-300"
-                style={{
-                  color: '#EB4015',
-                  opacity: show('bar1amount') ? 1 : 0,
-                }}
+                className="font-display"
+                style={{ fontSize: '18px', fontWeight: 500, color: NAVY }}
               >
-                {formatCurrency(currentPayment.totalPaid)}
+                {formatCurrency(businessOriginDebt)}
               </span>
             </div>
-
-            {/* Year labels below bar */}
-            <div
-              className="flex justify-between mt-1.5 transition-opacity duration-300"
-              style={{ opacity: show('bar1') ? 1 : 0 }}
-            >
-              <span className="text-[12px] text-neutral-500">{currentPayment.startYear}</span>
-              <span className="text-[12px] text-neutral-500">{currentPayment.endYear}</span>
-            </div>
-          </div>
-
-          <div className="h-8" />
-
-          {/* Bar 2: With structured program — solid teal, no track */}
-          <div>
-            <p className="text-[13px] font-medium mb-2" style={{ color: '#1B2A4A' }}>
-              With a structured program
-            </p>
-
-            <div className="relative">
-              <div
-                className="relative rounded-md flex items-center justify-end px-4 h-10 sm:h-12"
-                style={{
-                  backgroundColor: '#0C7663',
-                  width: show('bar2') ? `${programWidthPercent}%` : '0%',
-                  minWidth: show('bar2') ? 80 : 0,
-                  transition: 'width 600ms cubic-bezier(0.22, 1, 0.36, 1)',
-                  overflow: 'hidden',
-                }}
-              >
-                {/* Amount inside bar — desktop */}
-                <span
-                  className="hidden sm:inline text-[20px] font-bold text-white whitespace-nowrap transition-opacity duration-300"
-                  style={{ opacity: show('bar2amount') ? 1 : 0 }}
-                >
-                  {formatCurrency(withProgram.totalPaid)}
-                </span>
-              </div>
-
-              {/* Amount outside bar — mobile fallback */}
+            <div className="flex justify-between items-baseline">
+              <span style={{ fontSize: '15px', fontWeight: 400, color: NAVY }}>
+                Interest accrued over {currentPayment.years} years
+              </span>
               <span
-                className="sm:hidden absolute top-1/2 -translate-y-1/2 text-[20px] font-bold whitespace-nowrap transition-opacity duration-300"
-                style={{
-                  left: show('bar2') ? `calc(${programWidthPercent}% + 8px)` : '88px',
-                  color: '#0C7663',
-                  opacity: show('bar2amount') ? 1 : 0,
-                }}
+                className="font-display"
+                style={{ fontSize: '18px', fontWeight: 500, color: NAVY }}
               >
-                {formatCurrency(withProgram.totalPaid)}
+                {formatCurrency(interestAccrued)}
               </span>
             </div>
-
-            {/* Year labels — anchored to bar width only */}
-            <div
-              className="flex justify-between mt-1.5 transition-opacity duration-300"
-              style={{
-                width: `${programWidthPercent}%`,
-                minWidth: 80,
-                opacity: show('bar2') ? 1 : 0,
-              }}
-            >
-              <span className="text-[12px] text-neutral-500">{withProgram.startYear}</span>
-              <span className="text-[12px] text-neutral-500">{withProgram.endYear}</span>
-            </div>
           </div>
 
-          {onCta && (
-            <div className="mt-8">
-              <Button fullWidth showTrailingIcon onClick={onCta}>
-                Calculate my business-to-personal separation
-              </Button>
-            </div>
-          )}
+          <div
+            className="my-3"
+            style={{ height: '1px', backgroundColor: DIVIDER }}
+          />
+
+          <div className="flex justify-between items-baseline">
+            <span style={{ fontSize: '15px', fontWeight: 600, color: NAVY }}>
+              Total you&apos;d pay
+            </span>
+            <span
+              className="font-display"
+              style={{
+                fontSize: 'clamp(20px, 3.5vw, 22px)',
+                fontWeight: 700,
+                color: NAVY,
+              }}
+            >
+              {formatCurrency(currentPayment.totalPaid)}
+            </span>
+          </div>
+          <p
+            className="text-right mt-2"
+            style={{ fontSize: '13px', color: '#999999' }}
+          >
+            Resolved by {currentPayment.endYear}
+          </p>
         </div>
       </div>
+
+      {/* ── Arrow ── */}
+      <div
+        className="flex justify-center py-6 transition-opacity duration-300"
+        style={{ opacity: show('arrow') ? 1 : 0 }}
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          aria-hidden
+        >
+          <path
+            d="M8 2v10m0 0l-4-4m4 4l4-4"
+            stroke="#999999"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+
+      {/* ── Good receipt card ── */}
+      <div
+        className="transition-all duration-500 ease-out"
+        style={{
+          opacity: show('good') ? 1 : 0,
+          transform: show('good') ? 'translateY(0)' : 'translateY(16px)',
+        }}
+      >
+        <div
+          className="rounded-2xl"
+          style={{
+            backgroundColor: '#FFFFFF',
+            border: `2px solid ${GREEN}`,
+            padding: 'clamp(20px, 4vw, 24px)',
+          }}
+        >
+          <p
+            className="mb-4"
+            style={{
+              fontSize: '13px',
+              fontWeight: 600,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: GREEN,
+            }}
+          >
+            With Entrepreneur-Tier Relief
+          </p>
+
+          <div className="flex flex-col gap-2">
+            <div className="flex justify-between items-baseline">
+              <span style={{ fontSize: '15px', fontWeight: 400, color: NAVY }}>
+                Starting debt
+              </span>
+              <span
+                className="font-display"
+                style={{ fontSize: '18px', fontWeight: 500, color: NAVY }}
+              >
+                {formatCurrency(businessOriginDebt)}
+              </span>
+            </div>
+            <div className="flex justify-between items-baseline">
+              <span style={{ fontSize: '15px', fontWeight: 400, color: NAVY }}>
+                Settlement reduction
+              </span>
+              <span
+                className="font-display"
+                style={{ fontSize: '18px', fontWeight: 500, color: GREEN }}
+              >
+                &minus;{formatCurrency(settlementReduction)}
+              </span>
+            </div>
+          </div>
+
+          <div
+            className="my-3"
+            style={{ height: '1px', backgroundColor: DIVIDER }}
+          />
+
+          <div className="flex justify-between items-baseline">
+            <span style={{ fontSize: '15px', fontWeight: 600, color: NAVY }}>
+              Total you&apos;d pay
+            </span>
+            <span
+              className="font-display"
+              style={{
+                fontSize: 'clamp(20px, 3.5vw, 22px)',
+                fontWeight: 700,
+                color: GREEN,
+              }}
+            >
+              {formatCurrency(withProgram.totalPaid)}
+            </span>
+          </div>
+          <p
+            className="text-right mt-2"
+            style={{ fontSize: '13px', color: GREEN, opacity: 0.7 }}
+          >
+            Resolved by {withProgram.endYear}
+          </p>
+        </div>
+      </div>
+
+      {/* ── "You keep" climax ── */}
+      <div
+        className="text-center transition-all duration-700 ease-out"
+        style={{
+          marginTop: '40px',
+          marginBottom: '32px',
+          opacity: show('climax') ? 1 : 0,
+          transform: show('climax') ? 'translateY(0)' : 'translateY(12px)',
+        }}
+      >
+        <p
+          className="font-display"
+          style={{
+            fontSize: 'clamp(24px, 4vw, 28px)',
+            fontWeight: 600,
+            lineHeight: 1.25,
+            color: NAVY,
+          }}
+        >
+          You keep{' '}
+          <span style={{ color: GREEN }}>
+            {formatCurrency(youKeepAmount)}
+          </span>{' '}
+          and{' '}
+          <span style={{ color: GREEN }}>
+            {yearsSaved} years
+          </span>
+          .
+        </p>
+      </div>
+
+      {/* ── CTA ── */}
+      {onCta && (
+        <div
+          className="transition-all duration-500 ease-out"
+          style={{
+            opacity: show('done') ? 1 : 0,
+            transform: show('done') ? 'translateY(0)' : 'translateY(8px)',
+          }}
+        >
+          <Button fullWidth showTrailingIcon onClick={onCta}>
+            Calculate my business-to-personal separation
+          </Button>
+        </div>
+      )}
 
       <p className="text-[11px] text-neutral-500 text-center mt-4 max-w-[600px] mx-auto leading-relaxed">
         {disclaimer}

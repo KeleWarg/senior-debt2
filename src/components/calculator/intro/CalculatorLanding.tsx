@@ -101,19 +101,18 @@ export function CalculatorLanding({
       {/* ── Below-fold: timeline comparison ── */}
       <DebtRealityAnchor onCta={onCta}>
         <ComparisonTimeline
+          businessOriginDebt={45000}
           currentPayment={{
             years: 15,
-            startYear: 2026,
             endYear: 2041,
             totalPaid: 87650,
           }}
           withProgram={{
             years: 3,
-            startYear: 2026,
             endYear: 2029,
             totalPaid: 22500,
           }}
-          disclaimer="Based on $45,000 in personal unsecured debt at 22% APR, starting 2026. Relief estimate assumes industry-average program terms. Individual results vary; not a guarantee of savings or timeline."
+          disclaimer="Based on $45,000 in business-origin debt at 22% APR, starting 2026. Relief estimate uses industry-average program terms. Individual results vary; not a guarantee of savings or timeline."
           onCta={onCta}
         />
       </DebtRealityAnchor>
