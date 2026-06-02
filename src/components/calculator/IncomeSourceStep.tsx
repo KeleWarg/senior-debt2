@@ -42,7 +42,7 @@ function ProtectionDisclaimer() {
         >
           <path d="M6 4L10 8L6 12" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        <span style={{ fontSize: '13px', fontWeight: 500, color: '#4B5563' }}>
+        <span className="text-caption font-medium text-neutral-500">
           Understanding which income and retirement funds are protected
         </span>
       </button>
@@ -55,10 +55,7 @@ function ProtectionDisclaimer() {
           transition: 'max-height 200ms ease, opacity 200ms ease',
         }}
       >
-        <p
-          className="mt-3 pl-6"
-          style={{ fontSize: '13px', color: '#6B7280', lineHeight: 1.6 }}
-        >
+        <p className="mt-3 pl-6 text-caption text-neutral-500 leading-relaxed">
           Federal benefits such as Social Security, disability (SSDI), Supplemental Security Income (SSI), and VA benefits are generally protected from most debt collectors. However, banks are typically only required to automatically protect the last two months of direct deposits in your account. Amounts older than this may not be automatically shielded and could potentially be accessed if a court order is issued.
         </p>
       </div>
