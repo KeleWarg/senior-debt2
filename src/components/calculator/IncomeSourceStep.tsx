@@ -16,6 +16,56 @@ const INCOME_OPTIONS: { id: IncomeSource; label: string }[] = [
   { id: 'va_benefits', label: 'VA Benefits' },
 ]
 
+function ProtectionDisclaimer() {
+  const [isOpen, setIsOpen] = React.useState(false)
+
+  return (
+    <div
+      className="animate-fade-in-up w-full mb-6 rounded-xl border border-neutral-200 bg-white px-5 py-4"
+      style={{ animationDelay: '750ms' }}
+    >
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 w-full text-left"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          className="flex-shrink-0"
+          style={{
+            transition: 'transform 200ms ease',
+            transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
+          }}
+        >
+          <path d="M6 4L10 8L6 12" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <span style={{ fontSize: '13px', fontWeight: 500, color: '#4B5563' }}>
+          Understanding which income and retirement funds are protected
+        </span>
+      </button>
+
+      <div
+        style={{
+          maxHeight: isOpen ? '300px' : '0',
+          opacity: isOpen ? 1 : 0,
+          overflow: 'hidden',
+          transition: 'max-height 200ms ease, opacity 200ms ease',
+        }}
+      >
+        <p
+          className="mt-3 pl-6"
+          style={{ fontSize: '13px', color: '#6B7280', lineHeight: 1.6 }}
+        >
+          Federal benefits such as Social Security, disability (SSDI), Supplemental Security Income (SSI), and VA benefits are generally protected from most debt collectors. However, banks are typically only required to automatically protect the last two months of direct deposits in your account. Amounts older than this may not be automatically shielded and could potentially be accessed if a court order is issued.
+        </p>
+      </div>
+    </div>
+  )
+}
+
 export function IncomeSourceStep({ onSubmit }: IncomeSourceStepProps) {
   const [selected, setSelected] = React.useState<IncomeSource[]>([])
 
@@ -119,6 +169,8 @@ export function IncomeSourceStep({ onSubmit }: IncomeSourceStepProps) {
             </p>
           </div>
         </div>
+
+        <ProtectionDisclaimer />
 
         <div className="animate-fade-in-up w-full" style={{ animationDelay: '800ms' }}>
           <Button
