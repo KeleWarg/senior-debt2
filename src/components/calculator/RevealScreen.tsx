@@ -2,7 +2,8 @@
 
 import * as React from 'react'
 import confetti from 'canvas-confetti'
-import { Button, StickyButtonContainer } from '@/components/ui'
+import { Phone } from 'lucide-react'
+import { Button, Input, StickyButtonContainer } from '@/components/ui'
 import { formatCurrency, cn } from '@/lib/utils'
 
 const NAVY = '#1B2A4A'
@@ -39,15 +40,18 @@ function useInView(threshold = 0.3) {
 interface RevealScreenProps {
   debtAmount: number
   onContinue?: () => void
+  onPhoneSubmit?: (phone: string) => void
   skipIntro?: boolean
 }
 
 export function RevealScreen({
   debtAmount,
   onContinue,
+  onPhoneSubmit,
   skipIntro,
 }: RevealScreenProps) {
   const [stage, setStage] = React.useState(skipIntro ? 2 : 0)
+  const [phone, setPhone] = React.useState('')
   const [scoreRef, scoreInView] = useInView(0.2)
   const [animatedScore, setAnimatedScore] = React.useState(0)
 
@@ -212,30 +216,29 @@ export function RevealScreen({
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-4">
-            <div className="text-center">
-              <p style={{ fontSize: '24px', fontWeight: 700, color: TEAL }}>
+          {/* Stats cards */}
+          <div className="flex flex-col gap-3">
+            <div className="w-full rounded-xl border border-neutral-200 bg-white px-5 py-6 text-center">
+              <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: NAVY }}>
+                You Could Save
+              </p>
+              <p className="font-display mb-1" style={{ fontSize: 'clamp(32px, 5vw, 44px)', fontWeight: 700, color: TEAL }}>
                 {formatCurrency(estimatedReduction)}
               </p>
-              <p style={{ fontSize: '12px', color: CAPTION_GREY }}>
-                Estimated debt eliminated
+              <p style={{ fontSize: '14px', color: CAPTION_GREY }}>
+                Estimated total debt reduction
               </p>
             </div>
-            <div className="text-center">
-              <p style={{ fontSize: '24px', fontWeight: 700, color: TEAL }}>
-                ${monthlyRelief}/mo
+
+            <div className="w-full rounded-xl border border-neutral-200 bg-white px-5 py-6 text-center">
+              <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: NAVY }}>
+                Debt-Free In About
               </p>
-              <p style={{ fontSize: '12px', color: CAPTION_GREY }}>
-                Estimated monthly relief
+              <p className="font-display mb-1" style={{ fontSize: 'clamp(32px, 5vw, 44px)', fontWeight: 700, color: TEAL }}>
+                3-4 Yrs
               </p>
-            </div>
-            <div className="text-center">
-              <p style={{ fontSize: '24px', fontWeight: 700, color: TEAL }}>
-                36–48 mo
-              </p>
-              <p style={{ fontSize: '12px', color: CAPTION_GREY }}>
-                To become debt-free
+              <p style={{ fontSize: '14px', color: CAPTION_GREY }}>
+                Estimated timeline
               </p>
             </div>
           </div>
@@ -245,24 +248,58 @@ export function RevealScreen({
           </p>
         </div>
 
-        {/* CTA */}
+        {/* Phone capture */}
         <div
           className={cn(
-            'w-full mb-6 transition-all duration-700',
+            'w-full rounded-2xl border border-neutral-200 bg-white p-6 sm:p-8 mb-6 transition-all duration-700',
             stage >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
           )}
           style={{ transitionDelay: '100ms' }}
         >
-          <StickyButtonContainer>
-            <Button fullWidth showTrailingIcon onClick={onContinue}>
-              See My Debt-Free Plan
-            </Button>
-          </StickyButtonContainer>
-          <div className="flex flex-col items-center gap-1 mt-3">
-            <p style={{ fontSize: '13px', color: CAPTION_GREY }}>
-              Free · Takes 30 seconds · No obligation
-            </p>
+          <div className="flex items-start gap-3 mb-4">
+            <div
+              className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: '#EEF2FF' }}
+            >
+              <Phone className="w-5 h-5" style={{ color: TEAL }} />
+            </div>
+            <div>
+              <h3 className="font-bold" style={{ fontSize: '16px', color: NAVY }}>
+                Enter Your Phone Number To Get your personalized debt-free plan
+              </h3>
+            </div>
           </div>
+
+          <p className="mb-5" style={{ fontSize: '14px', color: '#666666', lineHeight: 1.6 }}>
+            A debt relief specialist may call to walk you through your estimated savings, monthly payment range, and next steps.
+          </p>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              if (phone.trim()) {
+                onPhoneSubmit?.(phone.trim())
+                onContinue?.()
+              }
+            }}
+          >
+            <div className="mb-4">
+              <Input
+                type="tel"
+                placeholder="Phone Number"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+              />
+            </div>
+            <Button fullWidth type="submit">
+              Unlock Your Debt Relief Plan
+            </Button>
+          </form>
+
+          <p className="text-center mt-3" style={{ fontSize: '13px', color: CAPTION_GREY }}>
+            Free &bull; No obligation
+          </p>
         </div>
 
         {/* Explanation card */}

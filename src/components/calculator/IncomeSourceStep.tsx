@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Button } from '@/components/ui'
+import { Button, StickyButtonContainer } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import type { IncomeSource } from '@/types/calculator'
 
@@ -79,7 +79,7 @@ export function IncomeSourceStep({ onSubmit }: IncomeSourceStepProps) {
           className="animate-fade-in-up text-xs font-medium uppercase tracking-wider text-neutral-400 mb-3"
           style={{ animationDelay: '400ms' }}
         >
-          Question 1 of 3
+          Question 1 of 5
         </p>
 
         <h1
@@ -170,16 +170,18 @@ export function IncomeSourceStep({ onSubmit }: IncomeSourceStepProps) {
         <ProtectionDisclaimer />
 
         <div className="animate-fade-in-up w-full" style={{ animationDelay: '800ms' }}>
-          <Button
-            fullWidth
-            showTrailingIcon
-            onClick={() => {
-              if (selected.length > 0) onSubmit(selected)
-            }}
-            disabled={selected.length === 0}
-          >
-            Continue
-          </Button>
+          <StickyButtonContainer>
+            <Button
+              fullWidth
+              showTrailingIcon
+              onClick={() => {
+                if (selected.length > 0) onSubmit(selected)
+              }}
+              disabled={selected.length === 0}
+            >
+              Continue
+            </Button>
+          </StickyButtonContainer>
         </div>
       </div>
     </div>

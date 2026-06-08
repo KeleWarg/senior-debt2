@@ -6,8 +6,9 @@ import {
   IncomeSourceStep,
   TotalDebtStep,
   PaymentSituationStep,
+  NameCaptureStep,
+  EmailCaptureStep,
   RevealScreen,
-  LeadCaptureStep,
 } from '@/components/calculator'
 import { CalculatorLanding } from '@/components/calculator/intro/CalculatorLanding'
 import { CalcProgressBar } from '@/components/calculator/CalcProgressBar'
@@ -27,9 +28,10 @@ const STEP_ORDER: CalcStep[] = [
   'incomeSource',
   'totalDebt',
   'paymentSituation',
+  'nameCapture',
+  'emailCapture',
   'loader',
   'reveal',
-  'leadCapture',
 ]
 
 const FULL_SCREEN_STEPS: CalcStep[] = ['intro', 'loader']
@@ -66,7 +68,7 @@ export default function CalculatorPage() {
   }, [])
 
   const isFullScreen = FULL_SCREEN_STEPS.includes(step)
-  const showProgress = !isFullScreen && step !== 'reveal' && step !== 'leadCapture'
+  const showProgress = !isFullScreen && step !== 'reveal'
   const showBack = step !== 'intro' && step !== 'loader'
 
   if (step === 'intro') {
@@ -123,6 +125,25 @@ export default function CalculatorPage() {
           <PaymentSituationStep
             onSubmit={(situation: PaymentSituation) => {
               update({ paymentSituation: situation })
+              goTo('nameCapture')
+            }}
+          />
+        )
+      case 'nameCapture':
+        return (
+          <NameCaptureStep
+            onSubmit={(firstName: string, lastName: string) => {
+              update({ firstName, lastName })
+              goTo('emailCapture')
+            }}
+          />
+        )
+      case 'emailCapture':
+        return (
+          <EmailCaptureStep
+            firstName={data.firstName}
+            onSubmit={(email: string) => {
+              update({ email })
               goTo('loader')
             }}
           />
@@ -131,15 +152,8 @@ export default function CalculatorPage() {
         return (
           <RevealScreen
             debtAmount={data.debtAmount}
-            onContinue={() => goTo('leadCapture')}
-          />
-        )
-      case 'leadCapture':
-        return (
-          <LeadCaptureStep
-            debtAmount={data.debtAmount}
-            onSubmit={(pii) => {
-              update(pii)
+            onPhoneSubmit={(phone: string) => {
+              update({ phone })
             }}
           />
         )

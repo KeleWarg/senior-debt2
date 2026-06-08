@@ -7,6 +7,8 @@ export type CalcStep =
   | 'incomeSource'
   | 'totalDebt'
   | 'paymentSituation'
+  | 'nameCapture'
+  | 'emailCapture'
   | 'loader'
   | 'reveal'
   | 'leadCapture'

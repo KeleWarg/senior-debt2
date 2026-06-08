@@ -29,7 +29,7 @@ export function TotalDebtStep({ onSubmit }: TotalDebtStepProps) {
           className="animate-fade-in-up text-xs font-medium uppercase tracking-wider text-neutral-400 mb-3"
           style={{ animationDelay: '400ms' }}
         >
-          Question 2 of 3
+          Question 2 of 5
         </p>
 
         <h1
